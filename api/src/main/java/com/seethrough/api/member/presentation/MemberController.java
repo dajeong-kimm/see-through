@@ -1,16 +1,21 @@
 package com.seethrough.api.member.presentation;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.seethrough.api.common.exception.ErrorResponse;
 import com.seethrough.api.common.pagination.SliceResponseDto;
+import com.seethrough.api.member.application.dto.MemberLoginResult;
 import com.seethrough.api.member.application.service.MemberService;
+import com.seethrough.api.member.presentation.dto.request.MemberRequest;
 import com.seethrough.api.member.presentation.dto.response.MemberListResponse;
 import com.seethrough.api.member.presentation.dto.response.MemberResponse;
 
@@ -33,10 +38,37 @@ public class MemberController {
 
 	private final MemberService memberService;
 
+	@PostMapping()
+	@Operation(
+		summary = "구성원 로그인 또는 생성",
+		description = "UUID로 작성된 구성원의 키를 활용해 기존 구성원으로 로그인하거나 새로운 구성원을 생성합니다.<br>" +
+			"기존 구성원인 경우, 나이와 이미지 경로를 업데이트하고 인식 횟수를 증가시킵니다.<br>" +
+			"신규 구성원인 경우, 외부 API를 통해 랜덤 닉네임을 생성하고 새로운 구성원을 등록합니다.<br>" +
+			"응답으로는 구성원의 상세 정보가 포함된 MemberResponse가 반환됩니다.<br>" +
+			"기존 구성원은 200 OK 상태 코드와 함께, 신규 구성원은 201 Created 상태 코드와 함께 응답됩니다."
+	)
+	@ApiResponses({
+		@ApiResponse(responseCode = "200", description = "기존 구성원 로그인 성공"),
+		@ApiResponse(responseCode = "201", description = "신규 구성원 생성 성공")
+	})
+	public ResponseEntity<MemberResponse> login(
+		@RequestBody MemberRequest request
+	) {
+		log.info("[Controller - POST /api/member] 구성원 식별 요청: request={}", request);
+
+		MemberLoginResult result = memberService.login(request);
+
+		log.debug("[Controller] 로그인 응답: {}", result);
+
+		return result.isNewMember() ?
+			ResponseEntity.status(HttpStatus.CREATED).body(result.getResponse()) :
+			ResponseEntity.ok(result.getResponse());
+	}
+
 	@GetMapping()
 	@Operation(
 		summary = "구성원 목록 조회",
-		description = "탏퇴하지 않은 모든 사용자의 목록을 페이지네이션을 적용하여 반환합니다.<br>" +
+		description = "탈퇴하지 않은 모든 사용자의 목록을 페이지네이션을 적용하여 반환합니다.<br>" +
 			"기본적으로 생성일 기준 내림차순으로 정렬되며, 페이지당 최대 10명의 구성원 정보를 제공합니다.<br>" +
 			"정렬 기준과 방향을 변경할 수 있으며, 추가 페이지 존재 여부를 함께 반환합니다."
 	)

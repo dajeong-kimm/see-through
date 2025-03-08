@@ -1,10 +1,10 @@
 package com.seethrough.api.member.domain;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
@@ -35,8 +35,9 @@ public class Member {
 	@JdbcTypeCode(SqlTypes.VARCHAR)
 	private UUID memberId;
 
+	@Builder.Default
 	@Column(name = "name", length = 100, nullable = false)
-	private String name;
+	private String name = "???";
 
 	@Column(name = "age", nullable = false)
 	private Integer age;
@@ -44,28 +45,42 @@ public class Member {
 	@Column(name = "image_path", length = 255)
 	private String imagePath;
 
+	@Builder.Default
 	@Column(name = "preferred_foods", columnDefinition = "JSON", nullable = false)
 	@Convert(converter = JsonArrayConverter.class)
-	private List<String> preferredFoods;
+	private List<String> preferredFoods = new ArrayList<>();
 
+	@Builder.Default
 	@Column(name = "disliked_foods", columnDefinition = "JSON", nullable = false)
 	@Convert(converter = JsonArrayConverter.class)
-	private List<String> dislikedFoods;
+	private List<String> dislikedFoods = new ArrayList<>();
 
+	@Builder.Default
 	@Column(name = "is_registered", nullable = false)
-	private Boolean isRegistered;
+	private Boolean isRegistered = Boolean.FALSE;
 
+	@Builder.Default
 	@Column(name = "recognition_times", nullable = false)
-	private Integer recognitionTimes;
+	private Integer recognitionTimes = 0;
 
-	@CreationTimestamp
+	@Builder.Default
 	@Column(name = "created_at", nullable = false, updatable = false)
-	private LocalDateTime createdAt;
+	private LocalDateTime createdAt = LocalDateTime.now();
 
 	@Column(name = "deleted_at")
 	private LocalDateTime deletedAt;
 
 	// TODO: 검증 로직
+
+	public void login(int age, String imagePath) {
+		if (!isRegistered) {
+			this.age = age;
+		}
+
+		this.imagePath = imagePath;
+
+		this.recognitionTimes++;
+	}
 
 	public void delete() {
 		validateDeletion();

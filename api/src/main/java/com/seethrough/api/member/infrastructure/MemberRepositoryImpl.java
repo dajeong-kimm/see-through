@@ -10,6 +10,8 @@ import org.springframework.stereotype.Repository;
 import com.seethrough.api.member.domain.Member;
 import com.seethrough.api.member.domain.MemberRepository;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -18,7 +20,16 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class MemberRepositoryImpl implements MemberRepository {
 
+	@PersistenceContext
+	private EntityManager entityManager;
 	private final MemberJpaRepository memberJpaRepository;
+
+	@Override
+	public void save(Member member) {
+		log.debug("[Repository] save 호출: {}", member);
+
+		entityManager.persist(member);
+	}
 
 	@Override
 	public Slice<Member> findMembers(Pageable pageable) {
@@ -37,7 +48,7 @@ public class MemberRepositoryImpl implements MemberRepository {
 
 	@Override
 	public Optional<Member> findByMemberId(UUID memberId) {
-		log.debug("[Repository] findByMemberId 호출: memberId={}", memberId);
+		log.debug("[Repository] findByMemberId 호출");
 
 		Optional<Member> entity = memberJpaRepository.findByMemberIdAndDeletedAtIsNull(memberId);
 
