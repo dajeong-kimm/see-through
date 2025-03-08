@@ -23,16 +23,6 @@ public class MemberService {
 	private final MemberRepository memberRepository;
 	private final MemberDtoMapper memberDtoMapper;
 
-	/**
-	 * 페이지네이션에 맞게 구성원의 리스트 반환합니다.
-	 *
-	 * 최대 10명의 구성원을 반환하며 Slice 형식으로 다음 값이 있는지를 SliceInfo에 함께 반환
-	 * @param page
-	 * @param size
-	 * @param sortBy
-	 * @param sortDirection
-	 * @return
-	 */
 	public SliceResponseDto<MemberResponse> getMemberList(
 		Integer page, Integer size, String sortBy, String sortDirection
 	) {
