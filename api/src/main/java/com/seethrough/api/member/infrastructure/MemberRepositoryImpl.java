@@ -26,10 +26,10 @@ public class MemberRepositoryImpl implements MemberRepository {
 
 		Slice<Member> entities = memberJpaRepository.findAllByDeletedAtIsNull(pageable);
 
-		log.debug("[Repository] 조회된 엔티티 수: {}, 남은 데이터 여부: {}", entities.getNumberOfElements(), entities.hasNext());
+		log.debug("[Repository] 조회된 구성원 수: {}, 남은 데이터 여부: {}", entities.getNumberOfElements(), entities.hasNext());
 
 		if (!entities.getContent().isEmpty()) {
-			log.debug("[Repository] 첫 번째 엔티티 상세 정보:{}", entities.getContent().get(0));
+			log.debug("[Repository] 첫 번째 구성원 상세 정보:{}", entities.getContent().get(0));
 		}
 
 		return entities;
@@ -41,7 +41,7 @@ public class MemberRepositoryImpl implements MemberRepository {
 
 		Optional<Member> entity = memberJpaRepository.findByMemberIdAndDeletedAtIsNull(memberId);
 
-		log.debug("[Repository] 조회된 엔티티: {}", entity);
+		log.debug("[Repository] 조회된 구성원: {}", entity);
 
 		return entity;
 	}

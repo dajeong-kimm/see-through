@@ -66,4 +66,15 @@ public class Member {
 	private LocalDateTime deletedAt;
 
 	// TODO: 검증 로직
+
+	public void delete() {
+		validateDeletion();
+		this.deletedAt = LocalDateTime.now();
+	}
+
+	private void validateDeletion() {
+		if (this.deletedAt != null) {
+			throw new IllegalStateException("이미 삭제된 회원입니다.");
+		}
+	}
 }

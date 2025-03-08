@@ -51,9 +51,20 @@ public class MemberService {
 
 		Member member = findMember(memberIdObj);
 
-		log.debug("[Service] 구성원 상세 정보: {}", member);
-
 		return memberDtoMapper.toResponse(member);
+	}
+
+	@Transactional
+	public Boolean deleteMember(String memberId) {
+		log.debug("[Service] deleteMember 호출: memberId={}", memberId);
+
+		UUID memberIdObj = UUID.fromString(memberId);
+
+		Member member = findMember(memberIdObj);
+
+		member.delete();
+
+		return true;
 	}
 
 	private Member findMember(UUID memberId) {

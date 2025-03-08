@@ -1,6 +1,7 @@
 package com.seethrough.api.member.presentation;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -88,5 +89,16 @@ public class MemberController {
 		log.debug("[Controller] 구성원 조회 응답: {}", response);
 
 		return ResponseEntity.ok(response);
+	}
+
+	@DeleteMapping("/{memberId}")
+	public ResponseEntity<Boolean> deleteMember(@PathVariable String memberId) {
+		log.info("[Controller - DELETE /api/member/{memberId}] 구성원 삭제 요청: memberId={}", memberId);
+
+		Boolean result = memberService.deleteMember(memberId);
+
+		log.debug("[Controller] 구성원 삭제 결과: {}", result);
+
+		return ResponseEntity.ok(result);
 	}
 }
