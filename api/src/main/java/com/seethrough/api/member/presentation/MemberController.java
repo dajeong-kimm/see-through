@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.seethrough.api.common.exception.ErrorResponse;
 import com.seethrough.api.common.pagination.SliceResponseDto;
 import com.seethrough.api.member.application.service.MemberService;
+import com.seethrough.api.member.presentation.dto.response.MemberListResponse;
 import com.seethrough.api.member.presentation.dto.response.MemberResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -38,7 +39,7 @@ public class MemberController {
 			"기본적으로 생성일 기준 내림차순으로 정렬되며, 페이지당 최대 10명의 구성원 정보를 제공합니다.<br>" +
 			"정렬 기준과 방향을 변경할 수 있으며, 추가 페이지 존재 여부를 함께 반환합니다."
 	)
-	public ResponseEntity<SliceResponseDto<MemberResponse>> getMemberList(
+	public ResponseEntity<SliceResponseDto<MemberListResponse>> getMemberList(
 		@Parameter(description = "조회할 페이지 번호 (1부터 시작)")
 		@RequestParam(defaultValue = "1") Integer page,
 
@@ -53,7 +54,7 @@ public class MemberController {
 	) {
 		log.info("[Controller - GET /api/member] 구성원 목록 조회 요청: page={}, size={}, sortBy={}, sortDirection={}", page, size, sortBy, sortDirection);
 
-		SliceResponseDto<MemberResponse> responseList = memberService.getMemberList(page, size, sortBy, sortDirection);
+		SliceResponseDto<MemberListResponse> responseList = memberService.getMemberList(page, size, sortBy, sortDirection);
 
 		if (!responseList.getContent().isEmpty()) {
 			log.debug("[Controller] 첫 번째 응답 상세 정보:{}", responseList.getContent().get(0));

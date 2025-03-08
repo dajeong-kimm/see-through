@@ -11,6 +11,7 @@ import com.seethrough.api.member.application.mapper.MemberDtoMapper;
 import com.seethrough.api.member.domain.Member;
 import com.seethrough.api.member.domain.MemberRepository;
 import com.seethrough.api.member.exception.MemberNotFoundException;
+import com.seethrough.api.member.presentation.dto.response.MemberListResponse;
 import com.seethrough.api.member.presentation.dto.response.MemberResponse;
 
 import lombok.RequiredArgsConstructor;
@@ -25,7 +26,7 @@ public class MemberService {
 	private final MemberRepository memberRepository;
 	private final MemberDtoMapper memberDtoMapper;
 
-	public SliceResponseDto<MemberResponse> getMemberList(
+	public SliceResponseDto<MemberListResponse> getMemberList(
 		Integer page, Integer size, String sortBy, String sortDirection
 	) {
 		log.debug("[Service] getMemberList 호출: page={}, size={}, sortBy={}, sortDirection={}", page, size, sortBy, sortDirection);
@@ -43,7 +44,7 @@ public class MemberService {
 			log.debug("[Service] 첫 번째 구성원 상세 정보: {}", members.getContent().get(0));
 		}
 
-		return SliceResponseDto.of(members.map(memberDtoMapper::toResponse));
+		return SliceResponseDto.of(members.map(memberDtoMapper::toListResponse));
 	}
 
 	public MemberResponse getMember(String memberId) {
