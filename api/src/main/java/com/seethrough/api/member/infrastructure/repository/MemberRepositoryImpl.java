@@ -27,7 +27,7 @@ public class MemberRepositoryImpl implements MemberRepository {
 	public Slice<Member> findMembers(Pageable pageable) {
 		log.debug("[Repository] findMembers 호출: page={}, size={}, sort={}", pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort());
 
-		Slice<MemberEntity> entities = memberJpaRepository.findAll(pageable);
+		Slice<MemberEntity> entities = memberJpaRepository.findAllByDeletedAtIsNull(pageable);
 
 		log.debug("[Repository] 조회된 엔티티 수: {}, 남은 데이터 여부: {}", entities.getNumberOfElements(), entities.hasNext());
 
@@ -42,7 +42,7 @@ public class MemberRepositoryImpl implements MemberRepository {
 	public Optional<Member> findByMemberId(UUID memberId) {
 		log.debug("[Repository] findByMemberId 호출: memberId={}", memberId);
 
-		Optional<MemberEntity> entity = memberJpaRepository.findById(memberId.value());
+		Optional<MemberEntity> entity = memberJpaRepository.findByMemberIdAndDeletedAtIsNull(memberId.value());
 
 		log.debug("[Repository] 조회된 엔티티: {}", entity);
 

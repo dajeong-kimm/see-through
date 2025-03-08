@@ -35,7 +35,7 @@ public class MemberController {
 	@GetMapping
 	@Operation(
 		summary = "구성원 목록 조회",
-		description = "시스템에 등록된 모든 사용자의 목록을 페이지네이션을 적용하여 반환합니다.<br>" +
+		description = "탏퇴하지 않은 모든 사용자의 목록을 페이지네이션을 적용하여 반환합니다.<br>" +
 			"기본적으로 생성일 기준 내림차순으로 정렬되며, 페이지당 최대 10명의 구성원 정보를 제공합니다.<br>" +
 			"정렬 기준과 방향을 변경할 수 있으며, 추가 페이지 존재 여부를 함께 반환합니다."
 	)
@@ -72,7 +72,7 @@ public class MemberController {
 	@Operation(
 		summary = "구성원 조회",
 		description = "UUID로 작성된 구성원의 키를 활용해 시스템에 등록된 특정 사용자를 반환합니다.<br>" +
-			"해당 ID에 매칭되는 구성원이 없을 경우 MemberNotFoundException이 발생합니다.<br>" +
+			"해당 ID에 매칭되는 구성원이 없거나 탈퇴한 구성원인 경우 MemberNotFoundException이 발생합니다.<br>" +
 			"응답으로는 구성원의 기본 정보(ID, 이름, 등록 상태 등)가 포함됩니다."
 	)
 	@ApiResponses(value = {
