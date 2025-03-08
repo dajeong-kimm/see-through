@@ -11,7 +11,7 @@ public class MemberDtoMapper {
 
 	public MemberListResponse toListResponse(Member member) {
 		return MemberListResponse.builder()
-			.memberId(member.getMemberId().value())
+			.memberId(member.getMemberId().toString())
 			.name(member.getName())
 			.imagePath(member.getImagePath())
 			.isRegistered(member.getIsRegistered())
@@ -20,7 +20,7 @@ public class MemberDtoMapper {
 
 	public MemberResponse toResponse(Member member) {
 		return MemberResponse.builder()
-			.memberId(member.getMemberId().value())
+			.memberId(member.getMemberId().toString())
 			.name(member.getName())
 			.age(member.getAge())
 			.imagePath(member.getImagePath())

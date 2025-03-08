@@ -1,12 +1,13 @@
 package com.seethrough.api.member.application.service;
 
+import java.util.UUID;
+
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.seethrough.api.common.pagination.SliceRequestDto;
 import com.seethrough.api.common.pagination.SliceResponseDto;
-import com.seethrough.api.common.value.UUID;
 import com.seethrough.api.member.application.mapper.MemberDtoMapper;
 import com.seethrough.api.member.domain.Member;
 import com.seethrough.api.member.domain.MemberRepository;
@@ -40,25 +41,25 @@ public class MemberService {
 
 		Slice<Member> members = memberRepository.findMembers(sliceRequestDto.toPageable());
 
-		if (!members.getContent().isEmpty()) {
-			log.debug("[Service] 첫 번째 구성원 상세 정보: {}", members.getContent().get(0));
-		}
-
 		return SliceResponseDto.of(members.map(memberDtoMapper::toListResponse));
 	}
 
-	public MemberResponse getMember(String memberId) {
-		log.debug("[Service] getMember 호출: memberId={}", memberId);
+	public MemberResponse getMemberDetail(String memberId) {
+		log.debug("[Service] getMemberDetail 호출: memberId={}", memberId);
 
-		UUID memberIdObj = new UUID(memberId);
+		UUID memberIdObj = UUID.fromString(memberId);
 
-		Member member = memberRepository.findByMemberId(memberIdObj)
-			.orElseThrow(() ->
-				new MemberNotFoundException("구성원을 찾을 수 없습니다.")
-			);
+		Member member = findMember(memberIdObj);
 
 		log.debug("[Service] 구성원 상세 정보: {}", member);
 
 		return memberDtoMapper.toResponse(member);
+	}
+
+	private Member findMember(UUID memberId) {
+		return memberRepository.findByMemberId(memberId)
+			.orElseThrow(() ->
+				new MemberNotFoundException("구성원을 찾을 수 없습니다.")
+			);
 	}
 }

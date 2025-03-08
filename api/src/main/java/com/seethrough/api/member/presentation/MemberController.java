@@ -32,7 +32,7 @@ public class MemberController {
 
 	private final MemberService memberService;
 
-	@GetMapping
+	@GetMapping("/list")
 	@Operation(
 		summary = "구성원 목록 조회",
 		description = "탏퇴하지 않은 모든 사용자의 목록을 페이지네이션을 적용하여 반환합니다.<br>" +
@@ -80,10 +80,10 @@ public class MemberController {
 		@ApiResponse(responseCode = "404", description = "구성원을 찾을 수 없음",
 			content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
 	})
-	public ResponseEntity<MemberResponse> getMember(@PathVariable String memberId) {
+	public ResponseEntity<MemberResponse> getMemberDetail(@PathVariable String memberId) {
 		log.info("[Controller - GET /api/member/{memberId}] 구성원 조회 요청: memberId={}", memberId);
 
-		MemberResponse response = memberService.getMember(memberId);
+		MemberResponse response = memberService.getMemberDetail(memberId);
 
 		log.debug("[Controller] 구성원 조회 응답: {}", response);
 
