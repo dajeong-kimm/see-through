@@ -1,9 +1,12 @@
 package com.seethrough.api.member.infrastructure.repository;
 
+import java.util.Optional;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Repository;
 
+import com.seethrough.api.common.value.UUID;
 import com.seethrough.api.member.domain.Member;
 import com.seethrough.api.member.domain.MemberRepository;
 import com.seethrough.api.member.infrastructure.entity.MemberEntity;
@@ -33,5 +36,16 @@ public class MemberRepositoryImpl implements MemberRepository {
 		}
 
 		return entities.map(memberEntityMapper::toDomain);
+	}
+
+	@Override
+	public Optional<Member> findByMemberId(UUID memberId) {
+		log.debug("[Repository] findByMemberId 호출: memberId={}", memberId);
+
+		Optional<MemberEntity> entity = memberJpaRepository.findById(memberId.value());
+
+		log.debug("[Repository] 조회된 엔티티: {}", entity);
+
+		return entity.map(memberEntityMapper::toDomain);
 	}
 }
