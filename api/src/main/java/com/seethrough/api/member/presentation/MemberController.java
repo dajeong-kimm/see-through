@@ -33,7 +33,7 @@ public class MemberController {
 
 	private final MemberService memberService;
 
-	@GetMapping("/list")
+	@GetMapping()
 	@Operation(
 		summary = "구성원 목록 조회",
 		description = "탏퇴하지 않은 모든 사용자의 목록을 페이지네이션을 적용하여 반환합니다.<br>" +
@@ -92,6 +92,17 @@ public class MemberController {
 	}
 
 	@DeleteMapping("/{memberId}")
+	@Operation(
+		summary = "구성원 삭제",
+		description = "UUID로 작성된 구성원의 키를 활용해 시스템에 등록된 특정 사용자를 삭제합니다.<br>" +
+			"해당 ID에 매칭되는 구성원이 없는 경우 MemberNotFoundException이 발생합니다.<br>" +
+			"응답으로는 삭제 성공 여부(Boolean)가 반환됩니다."
+	)
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "구성원 삭제 성공"),
+		@ApiResponse(responseCode = "404", description = "구성원을 찾을 수 없음",
+			content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+	})
 	public ResponseEntity<Boolean> deleteMember(@PathVariable String memberId) {
 		log.info("[Controller - DELETE /api/member/{memberId}] 구성원 삭제 요청: memberId={}", memberId);
 
