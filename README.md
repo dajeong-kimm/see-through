@@ -50,6 +50,11 @@
 Resolves: #S002 (Jira 이슈 번호)
 ```
 
+## `.gitmessage.txt` 사용법 (git commit template 설정)
+
+1. 로컬 레포지터리 루트 폴더에서 `git config --local commit.template .gitmessage.txt` 실행
+2. 이후 cli 상으로 `git commit` 혹은 VSCode의 GUI 상으로 (commit message 입력란을 비운 채로) `commit`을 누르면 `COMMIT_EDITMSG` 파일 편집창이 열림. 템플릿을 읽고 적절하게 comment out 및 수정 후 편집 창 닫기
+
 ---
 
 # Branch Naming Convention
