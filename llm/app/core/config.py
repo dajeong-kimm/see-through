@@ -18,6 +18,9 @@ print(f"✅ PINECONE_ENV: {PINECONE_ENV}")
 if not PINECONE_API_KEY:
     raise ValueError("🔴 PINECONE_API_KEY 환경 변수가 설정되지 않았습니다. .env 파일을 확인하세요.")
 
+# ✅ 인덱스 이름 설정
+INDEX_NAME = "fridge-data"
+
 # ✅ Pinecone 인스턴스 생성
 pc = Pinecone(api_key=PINECONE_API_KEY)
 
