@@ -29,7 +29,7 @@ public class IngredientRepositoryImpl implements IngredientRepository {
 	public Slice<Ingredient> findIngredients(Pageable pageable) {
 		log.debug("[Repository] findIngredients 호출: page={}, size={}, sort={}", pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort());
 
-		Slice<Ingredient> entities = ingredientJpaRepository.findAll(pageable);
+		Slice<Ingredient> entities = ingredientJpaRepository.findAllBy(pageable);
 
 		log.debug("[Repository] 조회된 식재료 수: {}, 남은 데이터 여부: {}", entities.getNumberOfElements(), entities.hasNext());
 
@@ -53,7 +53,7 @@ public class IngredientRepositoryImpl implements IngredientRepository {
 
 	@Override
 	public void saveAll(List<Ingredient> ingredients) {
-		log.debug("[Repository] saveAll 호출: {} 개의 재료", ingredients.size());
+		log.debug("[Repository] saveAll 호출: {} 개의 식재료", ingredients.size());
 
 		for (Ingredient ingredient : ingredients) {
 			entityManager.persist(ingredient);

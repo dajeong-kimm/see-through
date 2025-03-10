@@ -1,5 +1,6 @@
 package com.seethrough.api.ingredient.application.service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -14,7 +15,10 @@ import com.seethrough.api.common.pagination.SliceRequestDto;
 import com.seethrough.api.common.pagination.SliceResponseDto;
 import com.seethrough.api.ingredient.application.mapper.IngredientDtoMapper;
 import com.seethrough.api.ingredient.domain.Ingredient;
+import com.seethrough.api.ingredient.domain.IngredientLog;
+import com.seethrough.api.ingredient.domain.IngredientLogRepository;
 import com.seethrough.api.ingredient.domain.IngredientRepository;
+import com.seethrough.api.ingredient.domain.MovementType;
 import com.seethrough.api.ingredient.exception.IngredientNotFoundException;
 import com.seethrough.api.ingredient.presentation.dto.request.InboundIngredientsRequest;
 import com.seethrough.api.ingredient.presentation.dto.response.IngredientDetailResponse;
@@ -32,6 +36,7 @@ public class IngredientService {
 
 	private final IngredientRepository ingredientRepository;
 	private final IngredientDtoMapper ingredientDtoMapper;
+	private final IngredientLogRepository ingredientLogRepository;
 	private final MemberService memberService;
 	private final LlmApiService llmApiService;
 
@@ -77,6 +82,9 @@ public class IngredientService {
 		memberService.checkMemberExists(memberIdObj);
 
 		List<Ingredient> ingredients = new ArrayList<>();
+		List<IngredientLog> ingredientLogs = new ArrayList<>();
+
+		LocalDateTime now = LocalDateTime.now();
 
 		for (InboundIngredientsRequest request : inboundIngredientsRequest) {
 			UUID ingredientIdObj = UUID.randomUUID();
@@ -86,13 +94,24 @@ public class IngredientService {
 				.memberId(memberIdObj)
 				.name(request.getName())
 				.imagePath(request.getImagePath())
+				.inboundAt(now)
 				.expirationAt(request.getExpirationAt())
 				.build();
 
 			ingredients.add(ingredient);
+
+			IngredientLog ingredientLog = IngredientLog.builder()
+				.memberId(memberIdObj)
+				.ingredientName(request.getName())
+				.movementType(MovementType.INBOUND)
+				.createdAt(now)
+				.build();
+
+			ingredientLogs.add(ingredientLog);
 		}
 
 		ingredientRepository.saveAll(ingredients);
+		ingredientLogRepository.saveAll(ingredientLogs);
 
 		LlmInboundIngredientsRequest llmRequest = LlmInboundIngredientsRequest.from(ingredients);
 		llmApiService.sendIngredientsInbound(llmRequest);
