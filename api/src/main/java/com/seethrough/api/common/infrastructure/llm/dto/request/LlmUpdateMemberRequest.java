@@ -1,6 +1,6 @@
 package com.seethrough.api.common.infrastructure.llm.dto.request;
 
-import java.util.List;
+import java.util.Set;
 
 import com.seethrough.api.member.domain.Member;
 
@@ -16,8 +16,8 @@ import lombok.ToString;
 public class LlmUpdateMemberRequest {
 	private String memberId;
 	private int age;
-	private List<String> preferredFoods;
-	private List<String> dislikedFoods;
+	private Set<String> preferredFoods;
+	private Set<String> dislikedFoods;
 
 	public static LlmUpdateMemberRequest from(Member member) {
 		return LlmUpdateMemberRequest.builder()

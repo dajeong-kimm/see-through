@@ -1,7 +1,7 @@
 package com.seethrough.api.member.presentation.dto.response;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Set;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -15,8 +15,8 @@ public class DetailMemberResponse {
 	private String name;
 	private Integer age;
 	private String imagePath;
-	private List<String> preferredFoods;
-	private List<String> dislikedFoods;
+	private Set<String> preferredFoods;
+	private Set<String> dislikedFoods;
 	private Boolean isRegistered;
 	private LocalDateTime createdAt;
 }

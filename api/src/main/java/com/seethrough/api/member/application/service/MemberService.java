@@ -16,7 +16,9 @@ import com.seethrough.api.member.domain.Member;
 import com.seethrough.api.member.domain.MemberRepository;
 import com.seethrough.api.member.exception.MemberNotFoundException;
 import com.seethrough.api.member.infrastructure.nickname.NicknameApiService;
+import com.seethrough.api.member.presentation.dto.request.DislikedFoodsRequest;
 import com.seethrough.api.member.presentation.dto.request.LoginMemberRequest;
+import com.seethrough.api.member.presentation.dto.request.PreferredFoodsRequest;
 import com.seethrough.api.member.presentation.dto.request.UpdateMemberRequest;
 import com.seethrough.api.member.presentation.dto.response.DetailMemberResponse;
 import com.seethrough.api.member.presentation.dto.response.MemberListResponse;
@@ -121,8 +123,7 @@ public class MemberService {
 			request.getDislikedFoods()
 		);
 
-		LlmUpdateMemberRequest llmRequest = LlmUpdateMemberRequest.from(member);
-		llmApiService.sendMemberUpdate(llmRequest);
+		updateLlmMember(member);
 
 		return true;
 	}
@@ -140,10 +141,75 @@ public class MemberService {
 		return true;
 	}
 
+	@Transactional
+	public Boolean addPreferredFoods(String memberId, PreferredFoodsRequest request) {
+		log.debug("[Service] addPreferredFoods 호출");
+
+		UUID memberIdObj = UUID.fromString(memberId);
+
+		Member member = findMember(memberIdObj);
+
+		member.addPreferredFoods(request.getPreferredFoods());
+
+		updateLlmMember(member);
+
+		return true;
+	}
+
+	@Transactional
+	public Boolean removePreferredFoods(String memberId, PreferredFoodsRequest request) {
+		log.debug("[Service] removePreferredFoods 호출");
+
+		UUID memberIdObj = UUID.fromString(memberId);
+
+		Member member = findMember(memberIdObj);
+
+		member.removePreferredFoods(request.getPreferredFoods());
+
+		updateLlmMember(member);
+
+		return true;
+	}
+
+	@Transactional
+	public Boolean addDislikedFoods(String memberId, DislikedFoodsRequest request) {
+		log.debug("[Service] addDislikedFoods 호출");
+
+		UUID memberIdObj = UUID.fromString(memberId);
+
+		Member member = findMember(memberIdObj);
+
+		member.addDislikedFoods(request.getDislikedFoods());
+
+		updateLlmMember(member);
+
+		return true;
+	}
+
+	@Transactional
+	public Boolean removeDislikedFoods(String memberId, DislikedFoodsRequest request) {
+		log.debug("[Service] removeDislikedFoods 호출");
+
+		UUID memberIdObj = UUID.fromString(memberId);
+
+		Member member = findMember(memberIdObj);
+
+		member.removeDislikedFoods(request.getDislikedFoods());
+
+		updateLlmMember(member);
+
+		return true;
+	}
+
 	private Member findMember(UUID memberId) {
 		return memberRepository.findByMemberId(memberId)
 			.orElseThrow(() ->
 				new MemberNotFoundException("구성원을 찾을 수 없습니다.")
 			);
+	}
+
+	private void updateLlmMember(Member member) {
+		LlmUpdateMemberRequest llmRequest = LlmUpdateMemberRequest.from(member);
+		llmApiService.sendMemberUpdate(llmRequest);
 	}
 }

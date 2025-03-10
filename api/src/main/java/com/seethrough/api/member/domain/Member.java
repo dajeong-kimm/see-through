@@ -1,8 +1,8 @@
 package com.seethrough.api.member.domain;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 import org.hibernate.annotations.JdbcTypeCode;
@@ -48,12 +48,12 @@ public class Member {
 	@Builder.Default
 	@Column(name = "preferred_foods", columnDefinition = "JSON", nullable = false)
 	@Convert(converter = JsonArrayConverter.class)
-	private List<String> preferredFoods = new ArrayList<>();
+	private Set<String> preferredFoods = new HashSet<>();
 
 	@Builder.Default
 	@Column(name = "disliked_foods", columnDefinition = "JSON", nullable = false)
 	@Convert(converter = JsonArrayConverter.class)
-	private List<String> dislikedFoods = new ArrayList<>();
+	private Set<String> dislikedFoods = new HashSet<>();
 
 	@Builder.Default
 	@Column(name = "is_registered", nullable = false)
@@ -82,7 +82,7 @@ public class Member {
 		this.recognitionTimes++;
 	}
 
-	public void update(String name, int age, List<String> preferredFoods, List<String> dislikedFoods) {
+	public void update(String name, int age, Set<String> preferredFoods, Set<String> dislikedFoods) {
 		if (!isRegistered) {
 			this.isRegistered = true;
 		}
@@ -96,6 +96,22 @@ public class Member {
 	public void delete() {
 		validateDeletion();
 		this.deletedAt = LocalDateTime.now();
+	}
+
+	public void addPreferredFoods(Set<String> preferredFoods) {
+		this.preferredFoods.addAll(preferredFoods);
+	}
+
+	public void removePreferredFoods(Set<String> preferredFoods) {
+		this.preferredFoods.removeAll(preferredFoods);
+	}
+
+	public void addDislikedFoods(Set<String> dislikedFoods) {
+		this.dislikedFoods.addAll(dislikedFoods);
+	}
+
+	public void removeDislikedFoods(Set<String> dislikedFoods) {
+		this.dislikedFoods.removeAll(dislikedFoods);
 	}
 
 	private void validateDeletion() {

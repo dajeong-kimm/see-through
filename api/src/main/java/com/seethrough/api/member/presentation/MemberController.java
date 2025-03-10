@@ -4,9 +4,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,7 +16,9 @@ import com.seethrough.api.common.exception.ErrorResponse;
 import com.seethrough.api.common.pagination.SliceResponseDto;
 import com.seethrough.api.member.application.dto.LoginMemberResult;
 import com.seethrough.api.member.application.service.MemberService;
+import com.seethrough.api.member.presentation.dto.request.DislikedFoodsRequest;
 import com.seethrough.api.member.presentation.dto.request.LoginMemberRequest;
+import com.seethrough.api.member.presentation.dto.request.PreferredFoodsRequest;
 import com.seethrough.api.member.presentation.dto.request.UpdateMemberRequest;
 import com.seethrough.api.member.presentation.dto.response.DetailMemberResponse;
 import com.seethrough.api.member.presentation.dto.response.MemberListResponse;
@@ -125,7 +127,7 @@ public class MemberController {
 		return ResponseEntity.ok(response);
 	}
 
-	@PatchMapping
+	@PutMapping
 	@Operation(
 		summary = "구성원 수정",
 		description = "UUID로 식별되는 구성원의 정보를 수정합니다.<br>" +
@@ -139,7 +141,7 @@ public class MemberController {
 			content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
 	})
 	public ResponseEntity<Boolean> updateMember(@RequestBody UpdateMemberRequest request) {
-		log.info("[Controller - PATCH /api/member] 구성원 수정 요청: request={}", request);
+		log.info("[Controller - PUT /api/member] 구성원 수정 요청: request={}", request);
 
 		Boolean result = memberService.updateMember(request);
 
@@ -166,6 +168,89 @@ public class MemberController {
 		Boolean result = memberService.deleteMember(memberId);
 
 		log.debug("[Controller] 구성원 삭제 결과: {}", result);
+
+		return ResponseEntity.ok(result);
+	}
+
+	@PostMapping("/{memberId}/preferred-foods")
+	@Operation(
+		summary = "선호 음식 추가",
+		description = "UUID로 식별되는 구성원의 선호 음식을 추가합니다.<br>" +
+			"해당 ID에 매칭되는 구성원이 없는 경우 MemberNotFoundException이 발생합니다.<br>" +
+			"응답으로는 추가 성공 여부(Boolean)가 반환됩니다."
+	)
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "구성원 삭제 성공"),
+		@ApiResponse(responseCode = "404", description = "구성원을 찾을 수 없음",
+			content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+	})
+	public ResponseEntity<Boolean> addPreferredFoods(@PathVariable String memberId, @RequestBody PreferredFoodsRequest request) {
+		log.info("[Controller - POST /api/member/{memberId}/preferred-foods] 선호 음식 추가 요청: memberId={}, request={}", memberId, request);
+
+		Boolean result = memberService.addPreferredFoods(memberId, request);
+
+		log.debug("[Controller] 선호 음식 추가 결과: {}", result);
+
+		return ResponseEntity.ok(result);
+	}
+
+	@DeleteMapping("/{memberId}/preferred-foods")
+	@Operation(
+		summary = "선호 음식 삭제",
+		description = "UUID로 식별되는 구성원의 선호 음식을 삭제합니다.<br>" +
+			"해당 ID에 매칭되는 구성원이 없는 경우 MemberNotFoundException이 발생합니다.<br>" +
+			"응답으로는 삭제 성공 여부(Boolean)가 반환됩니다."
+	)
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "구성원 삭제 성공"),
+		@ApiResponse(responseCode = "404", description = "구성원을 찾을 수 없음",
+			content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+	})
+	public ResponseEntity<Boolean> removePreferredFoods(@PathVariable String memberId, @RequestBody PreferredFoodsRequest request) {
+		log.info("[Controller - DELETE /api/member/{memberId}/preferred-foods] 선호 음식 삭제 요청: memberId={}, request={}", memberId, request);
+
+		Boolean result = memberService.removePreferredFoods(memberId, request);
+
+		log.debug("[Controller] 선호 음식 삭제 결과: {}", result);
+
+		return ResponseEntity.ok(result);
+	}
+
+	@PostMapping("/{memberId}/disliked-foods")
+	@Operation(
+		summary = "비선호 음식 추가",
+		description = "UUID로 식별되는 구성원의 비선호 음식을 추가합니다.<br>" +
+			"해당 ID에 매칭되는 구성원이 없는 경우 MemberNotFoundException이 발생합니다.<br>" +
+			"응답으로는 추가 성공 여부(Boolean)가 반환됩니다."
+	)
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "구성원 삭제 성공"),
+		@ApiResponse(responseCode = "404", description = "구성원을 찾을 수 없음",
+			content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+	})
+	public ResponseEntity<Boolean> addDislikedFoods(@PathVariable String memberId, @RequestBody DislikedFoodsRequest request) {
+		log.info("[Controller - POST /api/member/{memberId}/disliked-foods] 비선호 음식 추가 요청: memberId={}, request={}", memberId, request);
+
+		Boolean result = memberService.addDislikedFoods(memberId, request);
+
+		log.debug("[Controller] 비선호 음식 추가 결과: {}", result);
+
+		return ResponseEntity.ok(result);
+	}
+
+	@DeleteMapping("/{memberId}/disliked-foods")
+	@Operation(
+		summary = "비선호 음식 삭제",
+		description = "UUID로 식별되는 구성원의 비선호 음식을 삭제합니다.<br>" +
+			"해당 ID에 매칭되는 구성원이 없는 경우 MemberNotFoundException이 발생합니다.<br>" +
+			"응답으로는 삭제 성공 여부(Boolean)가 반환됩니다."
+	)
+	public ResponseEntity<Boolean> removeDislikedFoods(@PathVariable String memberId, @RequestBody DislikedFoodsRequest request) {
+		log.info("[Controller - DELETE /api/member/{memberId}/disliked-foods] 비선호 음식 삭제 요청: memberId={}, request={}", memberId, request);
+
+		Boolean result = memberService.removeDislikedFoods(memberId, request);
+
+		log.debug("[Controller] 비선호 음식 삭제 결과: {}", result);
 
 		return ResponseEntity.ok(result);
 	}

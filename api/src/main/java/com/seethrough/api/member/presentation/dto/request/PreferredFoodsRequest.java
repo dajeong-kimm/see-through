@@ -9,10 +9,6 @@ import lombok.ToString;
 @Getter
 @ToString
 @AllArgsConstructor
-public class UpdateMemberRequest {
-	private String memberId;
-	private String name;
-	private int age;
+public class PreferredFoodsRequest {
 	private Set<String> preferredFoods;
-	private Set<String> dislikedFoods;
 }
