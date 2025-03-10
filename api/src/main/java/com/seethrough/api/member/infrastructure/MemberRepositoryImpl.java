@@ -21,7 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 public class MemberRepositoryImpl implements MemberRepository {
 
 	@PersistenceContext
-	private EntityManager entityManager;
+	private final EntityManager entityManager;
 	private final MemberJpaRepository memberJpaRepository;
 
 	@Override
