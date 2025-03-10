@@ -1,5 +1,7 @@
 package com.seethrough.api.ingredient.application.service;
 
+import java.util.UUID;
+
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,6 +12,8 @@ import com.seethrough.api.common.pagination.SliceResponseDto;
 import com.seethrough.api.ingredient.application.mapper.IngredientDtoMapper;
 import com.seethrough.api.ingredient.domain.Ingredient;
 import com.seethrough.api.ingredient.domain.IngredientRepository;
+import com.seethrough.api.ingredient.exception.IngredientNotFoundException;
+import com.seethrough.api.ingredient.presentation.dto.response.IngredientDetailResponse;
 import com.seethrough.api.ingredient.presentation.dto.response.IngredientListResponse;
 
 import lombok.RequiredArgsConstructor;
@@ -40,5 +44,22 @@ public class IngredientService {
 		Slice<Ingredient> ingredients = ingredientRepository.findIngredients(sliceRequestDto.toPageable());
 
 		return SliceResponseDto.of(ingredients.map(ingredientDtoMapper::toListResponse));
+	}
+
+	public IngredientDetailResponse getIngredientDetail(String ingredientId) {
+		log.debug("[Service] getIngredientDetail 호출");
+
+		UUID ingredientIdObj = UUID.fromString(ingredientId);
+
+		Ingredient ingredient = findIngredient(ingredientIdObj);
+
+		return ingredientDtoMapper.toDetailResponse(ingredient);
+	}
+
+	private Ingredient findIngredient(UUID ingredientId) {
+		return ingredientRepository.findByIngredientId(ingredientId)
+			.orElseThrow(() ->
+				new IngredientNotFoundException("식재료를 찾을 수 없습니다.")
+			);
 	}
 }

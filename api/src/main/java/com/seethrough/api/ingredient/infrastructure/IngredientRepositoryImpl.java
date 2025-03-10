@@ -1,5 +1,8 @@
 package com.seethrough.api.ingredient.infrastructure;
 
+import java.util.Optional;
+import java.util.UUID;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Repository;
@@ -30,5 +33,16 @@ public class IngredientRepositoryImpl implements IngredientRepository {
 		}
 
 		return entities;
+	}
+
+	@Override
+	public Optional<Ingredient> findByIngredientId(UUID ingredientId) {
+		log.debug("[Repository] findByIngredientId 호출");
+
+		Optional<Ingredient> entity = ingredientJpaRepository.findByIngredientId(ingredientId);
+
+		log.debug("[Repository] 조회된 식재료: {}", entity);
+
+		return entity;
 	}
 }

@@ -20,7 +20,7 @@ import com.seethrough.api.member.presentation.dto.request.DislikedFoodsRequest;
 import com.seethrough.api.member.presentation.dto.request.LoginMemberRequest;
 import com.seethrough.api.member.presentation.dto.request.PreferredFoodsRequest;
 import com.seethrough.api.member.presentation.dto.request.UpdateMemberRequest;
-import com.seethrough.api.member.presentation.dto.response.DetailMemberResponse;
+import com.seethrough.api.member.presentation.dto.response.MemberDetailResponse;
 import com.seethrough.api.member.presentation.dto.response.MemberListResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -55,7 +55,7 @@ public class MemberController {
 		@ApiResponse(responseCode = "200", description = "기존 구성원 로그인 성공"),
 		@ApiResponse(responseCode = "201", description = "신규 구성원 생성 성공")
 	})
-	public ResponseEntity<DetailMemberResponse> login(
+	public ResponseEntity<MemberDetailResponse> login(
 		@RequestBody LoginMemberRequest request
 	) {
 		log.info("[Controller - POST /api/member] 구성원 식별 요청: request={}", request);
@@ -117,10 +117,10 @@ public class MemberController {
 		@ApiResponse(responseCode = "404", description = "구성원을 찾을 수 없음",
 			content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
 	})
-	public ResponseEntity<DetailMemberResponse> getMemberDetail(@PathVariable String memberId) {
+	public ResponseEntity<MemberDetailResponse> getMemberDetail(@PathVariable String memberId) {
 		log.info("[Controller - GET /api/member/{memberId}] 구성원 조회 요청: memberId={}", memberId);
 
-		DetailMemberResponse response = memberService.getMemberDetail(memberId);
+		MemberDetailResponse response = memberService.getMemberDetail(memberId);
 
 		log.debug("[Controller] 구성원 조회 응답: {}", response);
 

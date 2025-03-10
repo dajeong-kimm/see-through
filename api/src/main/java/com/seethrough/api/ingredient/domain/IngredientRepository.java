@@ -1,9 +1,14 @@
 package com.seethrough.api.ingredient.domain;
 
+import java.util.Optional;
+import java.util.UUID;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 
 public interface IngredientRepository {
 
 	Slice<Ingredient> findIngredients(Pageable pageable);
+
+	Optional<Ingredient> findByIngredientId(UUID ingredientId);
 }
