@@ -21,7 +21,7 @@ public class SliceInfo {
 	public static SliceInfo of(Slice<?> slice) {
 		return new SliceInfo(
 			slice.getNumber() + 1,
-			slice.getSize(),
+			slice.getNumberOfElements(),
 			slice.hasNext()
 		);
 	}
