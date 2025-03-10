@@ -23,12 +23,12 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Entity
+@Table(name = "members")
 @Getter
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
-@Table(name = "members")
 public class Member {
 	@Id
 	@Column(name = "member_id", columnDefinition = "VARCHAR(36)", nullable = false)
@@ -80,6 +80,17 @@ public class Member {
 		this.imagePath = imagePath;
 
 		this.recognitionTimes++;
+	}
+
+	public void update(String name, int age, List<String> preferredFoods, List<String> dislikedFoods) {
+		if (!isRegistered) {
+			this.isRegistered = true;
+		}
+
+		this.name = name;
+		this.age = age;
+		this.preferredFoods = preferredFoods;
+		this.dislikedFoods = dislikedFoods;
 	}
 
 	public void delete() {

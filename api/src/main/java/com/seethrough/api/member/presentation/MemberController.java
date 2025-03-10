@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,6 +17,7 @@ import com.seethrough.api.common.pagination.SliceResponseDto;
 import com.seethrough.api.member.application.dto.LoginMemberResult;
 import com.seethrough.api.member.application.service.MemberService;
 import com.seethrough.api.member.presentation.dto.request.LoginMemberRequest;
+import com.seethrough.api.member.presentation.dto.request.UpdateMemberRequest;
 import com.seethrough.api.member.presentation.dto.response.DetailMemberResponse;
 import com.seethrough.api.member.presentation.dto.response.MemberListResponse;
 
@@ -121,6 +123,29 @@ public class MemberController {
 		log.debug("[Controller] 구성원 조회 응답: {}", response);
 
 		return ResponseEntity.ok(response);
+	}
+
+	@PatchMapping
+	@Operation(
+		summary = "구성원 수정",
+		description = "UUID로 식별되는 구성원의 정보를 수정합니다.<br>" +
+			"수정 요청 후 백그라운드에서 LLM API를 비동기적으로 호출하여 수정 이벤트를 처리합니다.<br>" +
+			"해당 ID에 매칭되는 구성원이 없는 경우 MemberNotFoundException이 발생합니다.<br>" +
+			"응답으로는 수정 성공 여부(Boolean)가 반환됩니다."
+	)
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "구성원 수정 성공"),
+		@ApiResponse(responseCode = "404", description = "구성원을 찾을 수 없음",
+			content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+	})
+	public ResponseEntity<Boolean> updateMember(@RequestBody UpdateMemberRequest request) {
+		log.info("[Controller - PATCH /api/member] 구성원 수정 요청: request={}", request);
+
+		Boolean result = memberService.updateMember(request);
+
+		log.debug("[Controller] 구성원 수정 결과: {}", result);
+
+		return ResponseEntity.ok(result);
 	}
 
 	@DeleteMapping("/{memberId}")

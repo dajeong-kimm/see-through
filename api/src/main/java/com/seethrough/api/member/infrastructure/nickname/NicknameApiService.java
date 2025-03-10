@@ -1,6 +1,4 @@
-package com.seethrough.api.member.infrastructure.external.nickname;
-
-import java.time.Duration;
+package com.seethrough.api.member.infrastructure.nickname;
 
 import org.springframework.stereotype.Service;
 
@@ -18,7 +16,6 @@ public class NicknameApiService {
 		try {
 			log.info("[NicknameApiService] 닉네임 생성 API 호출");
 			return nicknameApiClient.getNickname()
-				.timeout(Duration.ofSeconds(2))
 				.block();
 		} catch (Exception e) {
 			log.warn("랜덤 닉네임 획득 실패: {}", e.getMessage());

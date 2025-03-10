@@ -11,8 +11,18 @@ import reactor.netty.http.client.HttpClient;
 @Configuration
 public class WebClientConfig {
 
+	@Value("${llm.url}")
+	private String llmUrl;
+
 	@Value("${nickname.url}")
 	private String nicknameUrl;
+
+	@Bean
+	public WebClient llmWebClient(WebClient.Builder builder) {
+		return builder.baseUrl(llmUrl)
+			.clientConnector(new ReactorClientHttpConnector(HttpClient.create().followRedirect(true)))
+			.build();
+	}
 
 	@Bean
 	public WebClient nicknameWebClient(WebClient.Builder builder) {

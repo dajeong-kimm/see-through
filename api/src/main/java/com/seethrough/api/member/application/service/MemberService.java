@@ -6,6 +6,8 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.seethrough.api.common.infrastructure.llm.LlmApiService;
+import com.seethrough.api.common.infrastructure.llm.dto.request.LlmUpdateMemberRequest;
 import com.seethrough.api.common.pagination.SliceRequestDto;
 import com.seethrough.api.common.pagination.SliceResponseDto;
 import com.seethrough.api.member.application.dto.LoginMemberResult;
@@ -13,8 +15,9 @@ import com.seethrough.api.member.application.mapper.MemberDtoMapper;
 import com.seethrough.api.member.domain.Member;
 import com.seethrough.api.member.domain.MemberRepository;
 import com.seethrough.api.member.exception.MemberNotFoundException;
-import com.seethrough.api.member.infrastructure.external.nickname.NicknameApiService;
+import com.seethrough.api.member.infrastructure.nickname.NicknameApiService;
 import com.seethrough.api.member.presentation.dto.request.LoginMemberRequest;
+import com.seethrough.api.member.presentation.dto.request.UpdateMemberRequest;
 import com.seethrough.api.member.presentation.dto.response.DetailMemberResponse;
 import com.seethrough.api.member.presentation.dto.response.MemberListResponse;
 
@@ -29,6 +32,7 @@ public class MemberService {
 
 	private final MemberRepository memberRepository;
 	private final MemberDtoMapper memberDtoMapper;
+	private final LlmApiService llmApiService;
 	private final NicknameApiService nicknameApiService;
 
 	@Transactional
@@ -100,6 +104,27 @@ public class MemberService {
 		Member member = findMember(memberIdObj);
 
 		return memberDtoMapper.toResponse(member);
+	}
+
+	@Transactional
+	public Boolean updateMember(UpdateMemberRequest request) {
+		log.debug("[Service] updateMember 호출");
+
+		UUID memberIdObj = UUID.fromString(request.getMemberId());
+
+		Member member = findMember(memberIdObj);
+
+		member.update(
+			request.getName(),
+			request.getAge(),
+			request.getPreferredFoods(),
+			request.getDislikedFoods()
+		);
+
+		LlmUpdateMemberRequest llmRequest = LlmUpdateMemberRequest.from(member);
+		llmApiService.sendMemberUpdate(llmRequest);
+
+		return true;
 	}
 
 	@Transactional
