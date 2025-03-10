@@ -4,6 +4,11 @@
 - 본 프로젝트는 SWC를 사용합니다.
   - [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
+## 작업 시 권장 사항
+
+1. VSCode 사용을 권장합니다.
+2. `client` 폴더를 root 폴더로 하여 (`client` 폴더를 열어서) 작업하는 것을 권장합니다.
+
 ## ESLint
 
 ### 규칙 요약
