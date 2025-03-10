@@ -3,8 +3,8 @@ package com.seethrough.api.member.application.mapper;
 import org.springframework.stereotype.Component;
 
 import com.seethrough.api.member.domain.Member;
+import com.seethrough.api.member.presentation.dto.response.DetailMemberResponse;
 import com.seethrough.api.member.presentation.dto.response.MemberListResponse;
-import com.seethrough.api.member.presentation.dto.response.MemberResponse;
 
 @Component
 public class MemberDtoMapper {
@@ -18,8 +18,8 @@ public class MemberDtoMapper {
 			.build();
 	}
 
-	public MemberResponse toResponse(Member member) {
-		return MemberResponse.builder()
+	public DetailMemberResponse toResponse(Member member) {
+		return DetailMemberResponse.builder()
 			.memberId(member.getMemberId().toString())
 			.name(member.getName())
 			.age(member.getAge())

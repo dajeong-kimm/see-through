@@ -7,7 +7,7 @@ import lombok.ToString;
 @Getter
 @ToString
 @AllArgsConstructor
-public class MemberRequest {
+public class LoginMemberRequest {
 	private String memberId;
 	private Integer age;
 	private String imagePath;

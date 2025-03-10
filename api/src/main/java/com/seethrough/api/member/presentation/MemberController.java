@@ -13,11 +13,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.seethrough.api.common.exception.ErrorResponse;
 import com.seethrough.api.common.pagination.SliceResponseDto;
-import com.seethrough.api.member.application.dto.MemberLoginResult;
+import com.seethrough.api.member.application.dto.LoginMemberResult;
 import com.seethrough.api.member.application.service.MemberService;
-import com.seethrough.api.member.presentation.dto.request.MemberRequest;
+import com.seethrough.api.member.presentation.dto.request.LoginMemberRequest;
+import com.seethrough.api.member.presentation.dto.response.DetailMemberResponse;
 import com.seethrough.api.member.presentation.dto.response.MemberListResponse;
-import com.seethrough.api.member.presentation.dto.response.MemberResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -51,12 +51,12 @@ public class MemberController {
 		@ApiResponse(responseCode = "200", description = "기존 구성원 로그인 성공"),
 		@ApiResponse(responseCode = "201", description = "신규 구성원 생성 성공")
 	})
-	public ResponseEntity<MemberResponse> login(
-		@RequestBody MemberRequest request
+	public ResponseEntity<DetailMemberResponse> login(
+		@RequestBody LoginMemberRequest request
 	) {
 		log.info("[Controller - POST /api/member] 구성원 식별 요청: request={}", request);
 
-		MemberLoginResult result = memberService.login(request);
+		LoginMemberResult result = memberService.login(request);
 
 		log.debug("[Controller] 로그인 응답: {}", result);
 
@@ -113,10 +113,10 @@ public class MemberController {
 		@ApiResponse(responseCode = "404", description = "구성원을 찾을 수 없음",
 			content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
 	})
-	public ResponseEntity<MemberResponse> getMemberDetail(@PathVariable String memberId) {
+	public ResponseEntity<DetailMemberResponse> getMemberDetail(@PathVariable String memberId) {
 		log.info("[Controller - GET /api/member/{memberId}] 구성원 조회 요청: memberId={}", memberId);
 
-		MemberResponse response = memberService.getMemberDetail(memberId);
+		DetailMemberResponse response = memberService.getMemberDetail(memberId);
 
 		log.debug("[Controller] 구성원 조회 응답: {}", response);
 

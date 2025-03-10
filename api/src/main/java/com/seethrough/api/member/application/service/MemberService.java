@@ -8,15 +8,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.seethrough.api.common.pagination.SliceRequestDto;
 import com.seethrough.api.common.pagination.SliceResponseDto;
-import com.seethrough.api.member.application.dto.MemberLoginResult;
+import com.seethrough.api.member.application.dto.LoginMemberResult;
 import com.seethrough.api.member.application.mapper.MemberDtoMapper;
 import com.seethrough.api.member.domain.Member;
 import com.seethrough.api.member.domain.MemberRepository;
 import com.seethrough.api.member.exception.MemberNotFoundException;
 import com.seethrough.api.member.infrastructure.external.nickname.NicknameApiService;
-import com.seethrough.api.member.presentation.dto.request.MemberRequest;
+import com.seethrough.api.member.presentation.dto.request.LoginMemberRequest;
+import com.seethrough.api.member.presentation.dto.response.DetailMemberResponse;
 import com.seethrough.api.member.presentation.dto.response.MemberListResponse;
-import com.seethrough.api.member.presentation.dto.response.MemberResponse;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +32,7 @@ public class MemberService {
 	private final NicknameApiService nicknameApiService;
 
 	@Transactional
-	public MemberLoginResult login(MemberRequest request) {
+	public LoginMemberResult login(LoginMemberRequest request) {
 		log.debug("[Service] login 호출");
 
 		UUID memberIdObj = UUID.fromString(request.getMemberId());
@@ -69,7 +69,7 @@ public class MemberService {
 			memberRepository.save(member);
 		}
 
-		return MemberLoginResult.builder()
+		return LoginMemberResult.builder()
 			.isNewMember(isNewMember)
 			.response(memberDtoMapper.toResponse(member))
 			.build();
@@ -92,7 +92,7 @@ public class MemberService {
 		return SliceResponseDto.of(members.map(memberDtoMapper::toListResponse));
 	}
 
-	public MemberResponse getMemberDetail(String memberId) {
+	public DetailMemberResponse getMemberDetail(String memberId) {
 		log.debug("[Service] getMemberDetail 호출");
 
 		UUID memberIdObj = UUID.fromString(memberId);
