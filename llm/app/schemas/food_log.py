@@ -3,7 +3,7 @@ from typing import List
 from datetime import datetime
 
 class FoodLogEntry(BaseModel):
-    user_id: str
+    member_id: str
     food: str
     date: datetime
 

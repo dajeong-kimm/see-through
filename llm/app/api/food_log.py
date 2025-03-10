@@ -12,18 +12,18 @@ async def log_food(request: FoodLogRequest):
     batch_data = []
 
     for entry in request.logs:
-        text = f"{entry.user_id}가 {entry.date}에 {entry.food}을(를) 먹음"
+        text = f"{entry.member_id}가 {entry.date}에 {entry.food}을(를) 먹음"
         metadata = {
-            "user_id": entry.user_id,
+            "user_id": entry.member_id,
             "food": entry.food,
             "date": entry.date.isoformat()  # datetime을 문자열로 변환
         }
 
         batch_data.append({
-            "data_id": f"{entry.user_id}_{entry.date}",
+            "data_id": f"{entry.member_id}_{entry.date}",
             "text": text,
             "metadata": metadata,
-            "namespace": entry.user_id
+            "namespace": entry.member_id
         })
 
     # Pinecone에 배치 저장
