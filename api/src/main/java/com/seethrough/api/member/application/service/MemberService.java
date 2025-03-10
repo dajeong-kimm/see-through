@@ -201,6 +201,18 @@ public class MemberService {
 		return true;
 	}
 
+	public void checkMemberExists(UUID memberId) {
+		if (memberId == null) {
+			throw new MemberNotFoundException("구성원 ID가 존재하지 않습니다.");
+		}
+
+		boolean result = memberRepository.existsByMemberId(memberId);
+
+		if (!result) {
+			throw new MemberNotFoundException("구성원을 찾을 수 없습니다.");
+		}
+	}
+
 	private Member findMember(UUID memberId) {
 		return memberRepository.findByMemberId(memberId)
 			.orElseThrow(() ->

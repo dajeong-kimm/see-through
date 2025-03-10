@@ -55,9 +55,7 @@ public class MemberController {
 		@ApiResponse(responseCode = "200", description = "기존 구성원 로그인 성공"),
 		@ApiResponse(responseCode = "201", description = "신규 구성원 생성 성공")
 	})
-	public ResponseEntity<MemberDetailResponse> login(
-		@RequestBody LoginMemberRequest request
-	) {
+	public ResponseEntity<MemberDetailResponse> login(@RequestBody LoginMemberRequest request) {
 		log.info("[Controller - POST /api/member] 구성원 식별 요청: request={}", request);
 
 		LoginMemberResult result = memberService.login(request);

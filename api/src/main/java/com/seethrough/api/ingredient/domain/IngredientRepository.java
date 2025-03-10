@@ -1,5 +1,6 @@
 package com.seethrough.api.ingredient.domain;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -11,4 +12,6 @@ public interface IngredientRepository {
 	Slice<Ingredient> findIngredients(Pageable pageable);
 
 	Optional<Ingredient> findByIngredientId(UUID ingredientId);
+
+	void saveAll(List<Ingredient> ingredients);
 }

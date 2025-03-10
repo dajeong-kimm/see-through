@@ -35,6 +35,10 @@ public class Ingredient {
 	@JdbcTypeCode(SqlTypes.VARCHAR)
 	private UUID ingredientId;
 
+	@Column(name = "member_id", columnDefinition = "VARCHAR(36)", nullable = false)
+	@JdbcTypeCode(SqlTypes.VARCHAR)
+	private UUID memberId;
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "member_id", insertable = false, updatable = false)
 	@ToString.Exclude

@@ -56,4 +56,15 @@ public class MemberRepositoryImpl implements MemberRepository {
 
 		return entity;
 	}
+
+	@Override
+	public boolean existsByMemberId(UUID memberIdObj) {
+		log.debug("[Repository] existsByMemberId 호출");
+
+		boolean result = memberJpaRepository.existsById(memberIdObj);
+
+		log.debug("[Repository] 구성원 존재 여부: {}", result);
+
+		return result;
+	}
 }

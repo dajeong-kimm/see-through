@@ -13,4 +13,6 @@ public interface MemberRepository {
 	Slice<Member> findMembers(Pageable pageable);
 
 	Optional<Member> findByMemberId(UUID memberId);
+
+	boolean existsByMemberId(UUID memberIdObj);
 }

@@ -1,5 +1,6 @@
 package com.seethrough.api.ingredient.infrastructure;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -10,6 +11,8 @@ import org.springframework.stereotype.Repository;
 import com.seethrough.api.ingredient.domain.Ingredient;
 import com.seethrough.api.ingredient.domain.IngredientRepository;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -18,6 +21,8 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class IngredientRepositoryImpl implements IngredientRepository {
 
+	@PersistenceContext
+	private final EntityManager entityManager;
 	private final IngredientJpaRepository ingredientJpaRepository;
 
 	@Override
@@ -44,5 +49,14 @@ public class IngredientRepositoryImpl implements IngredientRepository {
 		log.debug("[Repository] 조회된 식재료: {}", entity);
 
 		return entity;
+	}
+
+	@Override
+	public void saveAll(List<Ingredient> ingredients) {
+		log.debug("[Repository] saveAll 호출: {} 개의 재료", ingredients.size());
+
+		for (Ingredient ingredient : ingredients) {
+			entityManager.persist(ingredient);
+		}
 	}
 }

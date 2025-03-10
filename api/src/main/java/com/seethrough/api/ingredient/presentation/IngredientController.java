@@ -1,8 +1,11 @@
 package com.seethrough.api.ingredient.presentation;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -10,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.seethrough.api.common.exception.ErrorResponse;
 import com.seethrough.api.common.pagination.SliceResponseDto;
 import com.seethrough.api.ingredient.application.service.IngredientService;
+import com.seethrough.api.ingredient.presentation.dto.request.InboundRequest;
 import com.seethrough.api.ingredient.presentation.dto.response.IngredientDetailResponse;
 import com.seethrough.api.ingredient.presentation.dto.response.IngredientListResponse;
 
@@ -88,5 +92,28 @@ public class IngredientController {
 		log.debug("[Controller] 식재료 조회 응답: {}", response);
 
 		return ResponseEntity.ok(response);
+	}
+
+	@PostMapping()
+	@Operation(
+		summary = "식재료 입고",
+		description = "새로운 식재료를 입고합니다.<br>" +
+			"해당 구성원 ID에 매칭되는 구성원이 없는 경우 MemberNotFoundException이 발생합니다.<br>" +
+			"입고 요청 후 백그라운드에서 LLM API를 비동기적으로 호출하여 입고 이벤트를 처리합니다.<br>" +
+			"응답으로는 201 Created 상태 코드와 함께 입고 성공 여부(Boolean)가 반환됩니다."
+	)
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "201", description = "식재료 입고 성공"),
+		@ApiResponse(responseCode = "404", description = "구성원을 찾을 수 없음",
+			content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+	})
+	public ResponseEntity<Boolean> inboundIngredients(@RequestBody InboundRequest request) {
+		log.info("[Controller - POST /api/ingredient] 식재료 입고 요청: request={}", request);
+
+		Boolean result = ingredientService.inboundIngredients(request.getMemberId(), request.getInboundIngredientsRequest());
+
+		log.debug("[Controller] 식재료 입고 결과: {}", result);
+
+		return ResponseEntity.status(HttpStatus.CREATED).body(result);
 	}
 }

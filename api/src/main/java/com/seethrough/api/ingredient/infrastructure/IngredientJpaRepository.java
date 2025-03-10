@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.seethrough.api.ingredient.domain.Ingredient;
 
-public interface IngredientJpaRepository extends JpaRepository<Ingredient, String> {
+public interface IngredientJpaRepository extends JpaRepository<Ingredient, UUID> {
 
 	Slice<Ingredient> findAllBy(Pageable pageable);
 
