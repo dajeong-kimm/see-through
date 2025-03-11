@@ -25,7 +25,8 @@ function MainPage() {
       />
 
       <MaterialsCard
-        materials={Array.from({ length: 10 }, () => ({
+        materials={Array.from({ length: 10 }, (_, i) => ({
+          id: i.toString(),
           image: "/placeholder.svg",
           name: "Empty material",
         }))}

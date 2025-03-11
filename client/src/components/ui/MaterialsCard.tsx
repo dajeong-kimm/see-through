@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "./main-card";
 
 interface Material {
+  id: string;
   name?: string;
   image?: string;
 }
@@ -37,8 +38,8 @@ function MaterialsCard({ materials = [] }: MaterialsCardProps) {
         <div className="grid grid-cols-5 gap-1">
           {
             // Show materials, limited to MAX_MATERIALS
-            materials.slice(0, MAX_MATERIALS).map((material, i) => (
-              <MaterialBlock key={i} material={material} />
+            materials.slice(0, MAX_MATERIALS).map((material) => (
+              <MaterialBlock key={material.id} material={material} />
             ))
           }
         </div>
