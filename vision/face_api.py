@@ -6,6 +6,9 @@ import numpy as np
 import tempfile
 import os
 import uuid
+import cv2
+import torch
+from ultralytics import YOLO
 
 app = FastAPI()
 
@@ -18,7 +21,43 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-detector_backend = "yolov11n"
+yolo_model = YOLO("yolov11n-face.pt")
+
+# YOLO를 활용한 얼굴 감지 API
+@app.post("/detect_faces/")
+async def detect_faces(file: UploadFile = File(...)):
+    """
+    YOLO를 이용하여 얼굴을 감지하고 좌표를 반환하는 API
+    """
+
+    # 업로드된 파일을 임시 저장
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".jpg") as temp_file:
+        temp_file.write(await file.read())
+        temp_file_path = temp_file.name
+
+    try:
+        # 이미지 로드
+        img = cv2.imread(temp_file_path)
+        if img is None:
+            raise ValueError("이미지를 읽을 수 없습니다.")
+
+        # YOLO를 이용한 얼굴 탐지
+        results = yolo_model(img)  # YOLO 실행
+        faces = []
+
+        for result in results:
+            boxes = result.boxes.xyxy  # YOLO가 반환한 bounding box 좌표
+            for box in boxes:
+                x1, y1, x2, y2 = map(int, box.tolist())  # 좌표 정수 변환
+                faces.append({"x1": x1, "y1": y1, "x2": x2, "y2": y2})
+
+        os.remove(temp_file_path)  # 사용 후 파일 삭제
+        return {"faces": faces}
+
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+
+detector_backend = "retinaface"
 model = "Facenet"
 db_path = "users"
 
