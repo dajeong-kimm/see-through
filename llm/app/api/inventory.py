@@ -4,7 +4,7 @@ from app.services.inventory_service import upsert_inventory, delete_inventory
 
 router = APIRouter()
 
-@router.post("/update_ingredient")
+@router.post("/update-ingredient")
 async def update_inventory(request: InventoryUpdateRequest):
     """냉장고 재료를 Pinecone에 저장 또는 업데이트"""
     
@@ -12,7 +12,7 @@ async def update_inventory(request: InventoryUpdateRequest):
 
     return {"message": "공유 냉장고 재료 업데이트 완료"}
 
-@router.delete("/remove_ingredient")
+@router.delete("/remove-ingredient")
 async def remove_ingredient(request: InventoryDeleteRequest):
     """냉장고 재료를 Pinecone에서 삭제"""
     

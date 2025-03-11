@@ -6,7 +6,7 @@ from app.schemas.food_log import FoodLogRequest
 
 router = APIRouter()
 
-@router.post("/log_food")
+@router.post("/log-food")
 async def log_food(request: FoodLogRequest):
     """여러 개의 음식 섭취 기록을 Pinecone에 저장"""
     batch_data = []
