@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import com.seethrough.api.common.infrastructure.TransactionCallbackManager;
 import com.seethrough.api.common.infrastructure.llm.dto.request.LlmInboundIngredientsRequest;
 import com.seethrough.api.common.infrastructure.llm.dto.request.LlmUpdateMemberRequest;
+import com.seethrough.api.common.infrastructure.llm.dto.response.LlmSuccessResponse;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,9 +22,9 @@ public class LlmApiService {
 		transactionCallbackManager.executeAfterCommit(() -> {
 			log.info("[LlmApiService] 외부 API 구성원 갱신 요청 시작");
 
-			llmApiClient.sendRequest("/llm/upcreate_at_user", request)
+			llmApiClient.sendPutRequestMono("/llm/upcreate_at_user", request, LlmSuccessResponse.class)
 				.subscribe(
-					success -> log.info("[LlmApiService] 외부 API 구성원 업데이트 성공: memberId={}", request.getMemberId()),
+					success -> log.info("[LlmApiService] 외부 API 구성원 업데이트 성공: response={}", success),
 					error -> log.error("[LlmApiService] 외부 API 구성원 업데이트 실패 (최대 재시도 후): memberId={}, error={}",
 						request.getMemberId(), error.getMessage())
 				);
@@ -34,9 +35,9 @@ public class LlmApiService {
 		transactionCallbackManager.executeAfterCommit(() -> {
 			log.info("[LlmApiService] 외부 API 식재료 입고 요청 시작");
 
-			llmApiClient.sendRequest("/llm/upcreate_at_inventory", request)
+			llmApiClient.sendPostRequestMono("/llm/upcreate_at_inventory", request, LlmSuccessResponse.class)
 				.subscribe(
-					success -> log.info("[LlmApiService] 외부 API 식재료 입고 성공"),
+					success -> log.info("[LlmApiService] 외부 API 식재료 입고 성공: response={}", success),
 					error -> log.error("[LlmApiService] 외부 API 식재료 입고 실패 (최대 재시도 후): error={}", error.getMessage())
 				);
 		});

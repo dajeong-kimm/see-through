@@ -20,19 +20,31 @@ public class LlmApiClient {
 
 	private final WebClient llmWebClient;
 
-	public <T> Mono<Boolean> sendRequest(String uri, T request) {
+	public <T, R> Mono<R> sendPostRequestMono(String uri, T request, Class<R> responseClass) {
+		return llmWebClient.post()
+			.uri(uri)
+			.bodyValue(request)
+			.retrieve()
+			.bodyToMono(responseClass)
+			.timeout(Duration.ofSeconds(TIMEOUT_SECONDS))
+			.retryWhen(Retry.backoff(MAX_RETRY_ATTEMPTS, Duration.ofMillis(500))
+				.doBeforeRetry(this::logBeforeRetry)
+			);
+	}
+
+	public <T, R> Mono<R> sendPutRequestMono(String uri, T request, Class<R> responseClass) {
 		return llmWebClient.put()
 			.uri(uri)
 			.bodyValue(request)
 			.retrieve()
-			.bodyToMono(Boolean.class)
+			.bodyToMono(responseClass)
 			.timeout(Duration.ofSeconds(TIMEOUT_SECONDS))
 			.retryWhen(Retry.backoff(MAX_RETRY_ATTEMPTS, Duration.ofMillis(500))
-				.doBeforeRetry(retrySignal ->
-					log.warn("[LlmApiClient] 재시도 #{}: {}",
-						retrySignal.totalRetries() + 1,
-						retrySignal.failure().getMessage())
-				)
+				.doBeforeRetry(this::logBeforeRetry)
 			);
+	}
+
+	private void logBeforeRetry(Retry.RetrySignal retrySignal) {
+		log.warn("[LlmApiClient] 재시도 #{}: {}", retrySignal.totalRetries() + 1, retrySignal.failure().getMessage());
 	}
 }

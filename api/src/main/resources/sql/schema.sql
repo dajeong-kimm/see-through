@@ -56,7 +56,7 @@ CREATE TABLE meal_plans (
 -- 식사 테이블
 CREATE TABLE meals (
     meal_id VARCHAR(36) NOT NULL,
-    dishes JSON NOT NULL,
+    menu JSON NOT NULL,
     serving_time ENUM('BREAKFAST', 'LUNCH', 'DINNER') NOT NULL,
 
     PRIMARY KEY (meal_id)
