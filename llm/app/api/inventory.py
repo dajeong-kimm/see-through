@@ -4,7 +4,7 @@ from app.services.inventory_service import upsert_inventory, delete_inventory
 
 router = APIRouter()
 
-@router.post("/upcreate_at_inventory")
+@router.post("/update_ingredient")
 async def update_inventory(request: InventoryUpdateRequest):
     """냉장고 재료를 Pinecone에 저장 또는 업데이트"""
     
