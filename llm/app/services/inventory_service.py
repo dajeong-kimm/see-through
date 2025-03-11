@@ -1,7 +1,14 @@
 from app.db.pinecone_client import index
+from app.schemas.inventory import InventoryDeleteRequest
 from app.schemas.inventory import InventoryUpdateRequest
+from fastapi import HTTPException
 from app.utils.embedding import get_embedding  # ✅ 임베딩 함수 사용
 import base64
+import logging
+
+# 로깅 설정
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
 def encode_to_ascii(text: str) -> str:
     """한글 포함된 문자열을 ASCII 문자열로 변환"""
@@ -27,3 +34,24 @@ def upsert_inventory(ingredients: InventoryUpdateRequest):
 
     # Pinecone에 저장 (namespace="fridge")
     index.upsert(vectors, namespace=namespace)
+
+
+def delete_inventory(ingredients: InventoryDeleteRequest):
+    """냉장고 재료를 Pinecone DB에서 삭제"""
+
+    namespace = "fridge"
+    ingredient_ids = [encode_to_ascii(ingredient) for ingredient in ingredients.ingredients]
+
+    # Pinecone에서 기존 재료 조회
+    fetch_response = index.fetch(ids=ingredient_ids, namespace=namespace)
+
+    existing_ingredient_ids = fetch_response.vectors.keys()
+
+    # 존재하지 않는 재료 필터링
+    missing_ingredients = [ing for ing in ingredients.ingredients if encode_to_ascii(ing) not in existing_ingredient_ids]
+
+    if missing_ingredients:
+        raise HTTPException(status_code=404, detail=f"일부 재료를 찾을 수 없습니다: {missing_ingredients}")
+
+    # Pinecone에서 재료 삭제
+    index.delete(ids=ingredient_ids, namespace=namespace)
