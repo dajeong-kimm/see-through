@@ -1,5 +1,44 @@
 # 🍽️ FastAPI 기반 냉장고 & 식단 관리 API
 
+## 🚀 실행 방법
+### Windows (PowerShell)
+```
+# 가상 환경 활성화
+venv\Scripts\Activate
+
+# FastAPI 서버 실행
+python -m uvicorn app.main:app --reload
+
+```
+
+### Windows (CMD)
+```
+# 가상 환경 활성화
+venv\Scripts\activate.bat
+
+# FastAPI 서버 실행
+python -m uvicorn app.main:app --reload
+```
+
+### Windows (Git Bash)
+```
+# 가상 환경 활성화
+source venv/Scripts/activate
+
+# FastAPI 서버 실행
+python -m uvicorn app.main:app --reload
+```
+
+### Mac/Linux (Bash/Zsh)
+```
+# 가상 환경 활성화
+source venv/bin/activate
+
+# FastAPI 서버 실행
+python -m uvicorn app.main:app --reload
+```
+---
+
 ## 🗂️ Pinecone 벡터 DB 구조
 ### 1. 냉장고 재료 저장 (fridge 인덱스)
 | 필드명  | 타입    | 설명                      |

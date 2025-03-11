@@ -4,7 +4,7 @@ from app.services.user_service import upsert_user_profile
 
 router = APIRouter()
 
-@router.put("/update_user")
+@router.put("/update-user")
 async def update_user_profile(user: UserProfile):
     """사용자 정보를 Pinecone에 저장 또는 업데이트"""
     
