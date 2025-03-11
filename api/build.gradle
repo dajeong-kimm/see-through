@@ -33,18 +33,20 @@ dependencies {
     // 웹 관련 의존성: REST API, MVC 기능 제공
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
-    // Lombok: 반복 코드(getter, setter 등)를 줄이기 위한 어노테이션 프로세서
-    compileOnly 'org.projectlombok:lombok'
-
     // 개발 편의성 도구: 코드 변경 시 자동 재시작 기능 제공
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
-    // Lombok 어노테이션 처리기: 컴파일 타임에 Lombok 어노테이션 처리
-    compileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
-
     // 테스트 프레임워크: JUnit, Mockito 등 테스트 도구 모음
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    // WebFlux: 비동기 및 논블로킹 HTTP 처리를 위한 리액티브 웹 스택
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
+    // Lombok: 반복 코드(getter, setter 등)를 줄이기 위한 어노테이션 프로세서
+    compileOnly 'org.projectlombok:lombok'
+
+    // Lombok 어노테이션 처리기: 컴파일 타임에 Lombok 어노테이션 처리
+    annotationProcessor 'org.projectlombok:lombok'
 
     // JUnit 플랫폼 런처: IDE에서 JUnit 테스트 실행을 지원
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
@@ -53,7 +55,7 @@ dependencies {
     runtimeOnly 'com.mysql:mysql-connector-j'
 
     // Swagger UI 및 OpenAPI 문서
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.5'
 
     // AWS S3 스토리지 서비스와 스프링 부트 통합을 위한 스프링 클라우드 AWS 스타터
 //    implementation 'io.awspring.cloud:spring-cloud-aws-starter-s3'
