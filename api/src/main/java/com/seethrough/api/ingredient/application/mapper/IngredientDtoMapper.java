@@ -39,9 +39,11 @@ public class IngredientDtoMapper {
 			.build();
 	}
 
-	public List<Ingredient> toIngredientList(UUID memberId, List<InboundIngredientRequest> listRequest) {
-		LocalDateTime now = LocalDateTime.now();
-
+	public List<Ingredient> toIngredientList(
+		UUID memberId,
+		List<InboundIngredientRequest> listRequest,
+		LocalDateTime now
+	) {
 		return listRequest.stream()
 			.map(request ->
 				toIngredient(
@@ -56,9 +58,12 @@ public class IngredientDtoMapper {
 			.toList();
 	}
 
-	public List<IngredientLog> toIngredientLogList(UUID memberId, List<InboundIngredientRequest> listRequest, MovementType movementType) {
-		LocalDateTime now = LocalDateTime.now();
-
+	public List<IngredientLog> toIngredientLogList(
+		UUID memberId,
+		List<InboundIngredientRequest> listRequest,
+		MovementType movementType,
+		LocalDateTime now
+	) {
 		return listRequest.stream()
 			.map(request ->
 				toIngredientLog(

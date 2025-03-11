@@ -19,7 +19,7 @@ import com.seethrough.api.ingredient.domain.IngredientLogRepository;
 import com.seethrough.api.ingredient.domain.IngredientRepository;
 import com.seethrough.api.ingredient.domain.MovementType;
 import com.seethrough.api.ingredient.exception.IngredientNotFoundException;
-import com.seethrough.api.ingredient.presentation.dto.request.InboundIngredientRequest;
+import com.seethrough.api.ingredient.presentation.dto.request.InboundIngredientsRequest;
 import com.seethrough.api.ingredient.presentation.dto.response.IngredientDetailResponse;
 import com.seethrough.api.ingredient.presentation.dto.response.IngredientListResponse;
 import com.seethrough.api.member.application.service.MemberService;
@@ -74,18 +74,22 @@ public class IngredientService {
 	}
 
 	@Transactional
-	public void inboundIngredients(String memberId, List<InboundIngredientRequest> listRequest) {
+	public void inboundIngredients(InboundIngredientsRequest request) {
 		log.debug("[Service] inboundIngredients 호출");
 
-		UUID memberIdObj = UUID.fromString(memberId);
+		UUID memberIdObj = UUID.fromString(request.getMemberId());
 		memberService.checkMemberExists(memberIdObj);
 
 		LocalDateTime now = LocalDateTime.now();
 
-		List<Ingredient> ingredients = ingredientDtoMapper.toIngredientList(memberIdObj, listRequest);
+		List<Ingredient> ingredients = ingredientDtoMapper.toIngredientList(
+			memberIdObj, request.getInboundIngredientRequestList(), now
+		);
 		ingredientRepository.saveAll(ingredients);
 
-		List<IngredientLog> ingredientLogs = ingredientDtoMapper.toIngredientLogList(memberIdObj, listRequest, MovementType.INBOUND);
+		List<IngredientLog> ingredientLogs = ingredientDtoMapper.toIngredientLogList(
+			memberIdObj, request.getInboundIngredientRequestList(), MovementType.INBOUND, now
+		);
 		ingredientLogRepository.saveAll(ingredientLogs);
 
 		LlmInboundIngredientsRequest llmRequest = LlmInboundIngredientsRequest.from(ingredients);

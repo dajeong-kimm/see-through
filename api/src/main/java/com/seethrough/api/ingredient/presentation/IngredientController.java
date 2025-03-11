@@ -111,7 +111,7 @@ public class IngredientController {
 	public ResponseEntity<Void> inboundIngredients(@RequestBody InboundIngredientsRequest request) {
 		log.info("[Controller - POST /api/ingredient] 식재료 입고 요청: request={}", request);
 
-		ingredientService.inboundIngredients(request.getMemberId(), request.getInboundIngredientList());
+		ingredientService.inboundIngredients(request);
 
 		log.debug("[Controller] 식재료 입고 성공");
 

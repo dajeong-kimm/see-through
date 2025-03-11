@@ -11,5 +11,5 @@ import lombok.ToString;
 @AllArgsConstructor
 public class InboundIngredientsRequest {
 	private String memberId;
-	private List<InboundIngredientRequest> inboundIngredientList;
+	private List<InboundIngredientRequest> inboundIngredientRequestList;
 }
