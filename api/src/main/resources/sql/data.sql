@@ -1,26 +1,30 @@
 -- 구성원 테이블 데이터
-INSERT INTO members (member_id, name, age, image_path, preferred_foods, disliked_foods, is_registered, recognition_times)
+INSERT INTO members (member_id, name, age, image_path, preferred_foods, disliked_foods, is_registered, recognition_times, deleted_at)
 VALUES
     ('00000000-0000-0000-0000-000000000001', '엄마', 42, '/images/profiles/mom.jpg',
      JSON_ARRAY('김치찌개', '비빔밥', '미역국'),
      JSON_ARRAY('생굴', '당근'),
-     TRUE, 35),
+     TRUE, 35, NULL),
     ('00000000-0000-0000-0000-000000000002', '아빠', 45, '/images/profiles/dad.jpg',
      JSON_ARRAY('삼겹살', '냉면', '소주'),
      JSON_ARRAY('피망', '홍어'),
-     TRUE, 28),
+     TRUE, 28, NULL),
     ('00000000-0000-0000-0000-000000000003', '아들', 15, '/images/profiles/son.jpg',
      JSON_ARRAY('피자', '치킨', '떡볶이'),
      JSON_ARRAY('브로콜리', '시금치'),
-     TRUE, 17),
+     TRUE, 17, NULL),
     ('00000000-0000-0000-0000-000000000004', '외부인1', 35, '/images/profiles/visitor1.jpg',
      JSON_ARRAY('초밥', '스테이크', '파스타'),
      JSON_ARRAY('셀러리', '고수'),
-     FALSE, 3),
+     FALSE, 3, NULL),
     ('00000000-0000-0000-0000-000000000005', '외부인2', 29, NULL,
      JSON_ARRAY('마라탕', '카레', '쌀국수'),
      JSON_ARRAY('오이', '가지'),
-     FALSE, 1);
+     FALSE, 1, NULL),
+    ('00000000-0000-0000-0000-000000000006', '탈퇴인1', 28, NULL,
+     JSON_ARRAY('치킨', '비빔밥'),
+     JSON_ARRAY('치즈'),
+     FALSE, 3, '2025-03-01 09:15:27');
 
 -- 냉장고 재료 테이블 데이터
 INSERT INTO ingredients (ingredient_id, member_id, name, image_path, inbound_at, expiration_at)
