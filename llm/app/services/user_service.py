@@ -2,6 +2,7 @@ from app.db.pinecone_client import index
 from app.schemas.user import UserProfile
 from app.utils.embedding import get_embedding
 import base64
+import logging
 
 def encode_to_ascii(text: str) -> str:
     """한글 포함된 문자열을 ASCII 문자열로 변환"""
@@ -34,3 +35,4 @@ def upsert_user_profile(user: UserProfile):
         vectors=[(user_id, user_vector, metadata)],  # 임베딩된 벡터 추가
         namespace=namespace
     )
+    logging.info(f"Pinecone 저장 완료: namespace={namespace}, id=profile")
