@@ -1,6 +1,6 @@
 package com.seethrough.api.ingredient.presentation.dto.request;
 
-import java.time.LocalDateTime;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,7 +10,6 @@ import lombok.ToString;
 @ToString
 @AllArgsConstructor
 public class InboundIngredientsRequest {
-	private String name;
-	private String imagePath;
-	private LocalDateTime expirationAt;
+	private String memberId;
+	private List<InboundIngredientRequest> inboundIngredientList;
 }

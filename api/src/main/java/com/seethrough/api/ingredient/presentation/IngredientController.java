@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.seethrough.api.common.exception.ErrorResponse;
 import com.seethrough.api.common.pagination.SliceResponseDto;
 import com.seethrough.api.ingredient.application.service.IngredientService;
-import com.seethrough.api.ingredient.presentation.dto.request.InboundRequest;
+import com.seethrough.api.ingredient.presentation.dto.request.InboundIngredientsRequest;
 import com.seethrough.api.ingredient.presentation.dto.response.IngredientDetailResponse;
 import com.seethrough.api.ingredient.presentation.dto.response.IngredientListResponse;
 
@@ -101,20 +101,20 @@ public class IngredientController {
 			"해당 구성원 ID에 매칭되는 구성원이 없는 경우 MemberNotFoundException이 발생합니다.<br>" +
 			"입고 처리 시 시스템에 자동으로 입출고 로그가 기록됩니다. 로그에는 입출고 일시, 담당자, 식재료 이름, 입출고 형태가 포함됩니다.<br>" +
 			"입고 요청 후 백그라운드에서 LLM API를 비동기적으로 호출하여 입고 이벤트를 처리합니다.<br>" +
-			"응답으로는 201 Created 상태 코드와 함께 입고 성공 여부(Boolean)가 반환됩니다."
+			"응답으로는 201 Created 상태 코드가 반환됩니다."
 	)
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "201", description = "식재료 입고 성공"),
 		@ApiResponse(responseCode = "404", description = "구성원을 찾을 수 없음",
 			content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
 	})
-	public ResponseEntity<Boolean> inboundIngredients(@RequestBody InboundRequest request) {
+	public ResponseEntity<Void> inboundIngredients(@RequestBody InboundIngredientsRequest request) {
 		log.info("[Controller - POST /api/ingredient] 식재료 입고 요청: request={}", request);
 
-		Boolean result = ingredientService.inboundIngredients(request.getMemberId(), request.getInboundIngredientsRequest());
+		ingredientService.inboundIngredients(request.getMemberId(), request.getInboundIngredientList());
 
-		log.debug("[Controller] 식재료 입고 결과: {}", result);
+		log.debug("[Controller] 식재료 입고 성공");
 
-		return ResponseEntity.status(HttpStatus.CREATED).body(result);
+		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
 }
