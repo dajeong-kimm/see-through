@@ -6,8 +6,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import lombok.extern.slf4j.Slf4j;
 import reactor.netty.http.client.HttpClient;
 
+@Slf4j
 @Configuration
 public class WebClientConfig {
 
@@ -20,6 +22,10 @@ public class WebClientConfig {
 	@Bean
 	public WebClient llmWebClient(WebClient.Builder builder) {
 		return builder.baseUrl(llmUrl)
+			.filter((request, next) -> {
+				log.info("[LlmWebClient] URL: {}", request.url());
+				return next.exchange(request);
+			})
 			.clientConnector(new ReactorClientHttpConnector(HttpClient.create().followRedirect(true)))
 			.build();
 	}
@@ -27,6 +33,10 @@ public class WebClientConfig {
 	@Bean
 	public WebClient nicknameWebClient(WebClient.Builder builder) {
 		return builder.baseUrl(nicknameUrl)
+			.filter((request, next) -> {
+				log.info("[NicknameWebClient] URL: {}", request.url());
+				return next.exchange(request);
+			})
 			.clientConnector(new ReactorClientHttpConnector(HttpClient.create().followRedirect(true)))
 			.build();
 	}

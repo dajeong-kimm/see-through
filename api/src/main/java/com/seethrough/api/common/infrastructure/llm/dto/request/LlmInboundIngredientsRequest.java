@@ -3,6 +3,7 @@ package com.seethrough.api.common.infrastructure.llm.dto.request;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.seethrough.api.ingredient.domain.Ingredient;
 
 import lombok.AllArgsConstructor;
@@ -15,6 +16,7 @@ import lombok.ToString;
 @Builder
 @AllArgsConstructor
 public class LlmInboundIngredientsRequest {
+	@JsonProperty("ingredients")
 	private List<String> ingredients;
 
 	public static LlmInboundIngredientsRequest from(List<Ingredient> ingredients) {
