@@ -17,7 +17,7 @@ import reactor.util.retry.Retry;
 public class LlmApiClient {
 
 	private static final int MAX_RETRY_ATTEMPTS = 3;
-	private static final int TIMEOUT_SECONDS = 5;
+	private static final int TIMEOUT_SECONDS = 60;
 	private static final int STREAMING_TIMEOUT_SECONDS = 300;
 
 	private final WebClient llmWebClient;
