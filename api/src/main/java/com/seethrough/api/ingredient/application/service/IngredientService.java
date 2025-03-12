@@ -115,6 +115,7 @@ public class IngredientService {
 
 		LocalDateTime now = LocalDateTime.now();
 
+		// TODO: 찾을 수 없는 식재료에 대한 에러 처리
 		List<Ingredient> ingredients = ingredientRepository.findIngredientsByIngredientId(ingredientIdList);
 		ingredientRepository.deleteAll(ingredients);
 

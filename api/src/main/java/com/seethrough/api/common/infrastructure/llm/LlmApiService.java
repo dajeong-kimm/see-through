@@ -25,7 +25,7 @@ public class LlmApiService {
 
 	public void sendMemberUpdate(LlmUpdateMemberRequest request) {
 		transactionCallbackManager.executeAfterCommit(() -> {
-			log.info("[LlmApiService] 외부 API 구성원 갱신 요청 시작");
+			log.info("[LlmApiService] 외부 API 구성원 갱신 요청 시작: request = {}", request);
 
 			llmApiClient.sendPutRequestMono("/llm/update-user", request, LlmSuccessResponse.class)
 				.subscribe(
@@ -38,7 +38,7 @@ public class LlmApiService {
 
 	public void sendIngredientsInbound(LlmInboundIngredientsRequest request) {
 		transactionCallbackManager.executeAfterCommit(() -> {
-			log.info("[LlmApiService] 외부 API 식재료 입고 요청 시작");
+			log.info("[LlmApiService] 외부 API 식재료 입고 요청 시작: request = {}", request);
 
 			llmApiClient.sendPostRequestMono("/llm/update-ingredient", request, LlmSuccessResponse.class)
 				.subscribe(
@@ -51,7 +51,7 @@ public class LlmApiService {
 	// TODO: Stream 형식으로 변경하기
 	public CompletableFuture<String> sendPersonalNotice(LlmPersonalNoticeRequest request) {
 		return transactionCallbackManager.executeAfterCommit(() -> {
-			log.info("[LlmApiService] 외부 API 식재료 출고 개인 알림 요청 시작");
+			log.info("[LlmApiService] 외부 API 식재료 출고 개인 알림 요청 시작: request = {}", request);
 
 			return Optional.ofNullable(
 					llmApiClient.sendPostRequestFlux("/llm/personal-notice", request, LlmPersonalNoticeResponse.class)
