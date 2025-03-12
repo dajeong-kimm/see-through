@@ -1,6 +1,6 @@
 import Header from "@/components/layout/Header";
 import MainPage from "@/pages/MainPage";
-import { CurrentMemberProvider } from "./contexts/current-member";
+import CurrentMemberProvider from "@/providers/CurrentMemberProvider";
 
 function App() {
   return (
