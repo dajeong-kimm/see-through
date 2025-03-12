@@ -1,7 +1,10 @@
 package com.seethrough.api.ingredient.presentation;
 
+import java.util.concurrent.CompletableFuture;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,6 +17,7 @@ import com.seethrough.api.common.exception.ErrorResponse;
 import com.seethrough.api.common.pagination.SliceResponseDto;
 import com.seethrough.api.ingredient.application.service.IngredientService;
 import com.seethrough.api.ingredient.presentation.dto.request.InboundIngredientsRequest;
+import com.seethrough.api.ingredient.presentation.dto.request.OutboundIngredientsRequest;
 import com.seethrough.api.ingredient.presentation.dto.response.IngredientDetailResponse;
 import com.seethrough.api.ingredient.presentation.dto.response.IngredientListResponse;
 
@@ -116,5 +120,29 @@ public class IngredientController {
 		log.debug("[Controller] 식재료 입고 성공");
 
 		return ResponseEntity.status(HttpStatus.CREATED).build();
+	}
+
+	@DeleteMapping()
+	@Operation(
+		summary = "식재료 출고",
+		description = "식재료를 출고합니다.<br>" +
+			"해당 구성원 ID에 매칭되는 구성원이 없는 경우 MemberNotFoundException이 발생합니다.<br>" +
+			"출고 처리 시 시스템에 자동으로 입출고 로그가 기록됩니다. 로그에는 입출고 일시, 담당자, 식재료 이름, 입출고 형태가 포함됩니다.<br>" +
+			"출고 요청 후 백그라운드에서 LLM API를 비동기적으로 호출하여 출고 이벤트를 처리합니다.<br>" +
+			"응답으로는 204 No Content 상태 코드가 반환됩니다."
+	)
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "204", description = "식재료 출고 성공"),
+		@ApiResponse(responseCode = "404", description = "구성원을 찾을 수 없음",
+			content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+	})
+	public ResponseEntity<CompletableFuture<String>> outboundIngredients(@RequestBody OutboundIngredientsRequest request) {
+		log.info("[Controller - DELETE /api/ingredient] 식재료 출고 요청: request={}", request);
+
+		CompletableFuture<String> result = ingredientService.outboundIngredients(request);
+
+		log.debug("[Controller] 식재료 출고 성공");
+
+		return ResponseEntity.status(HttpStatus.NO_CONTENT).body(result);
 	}
 }

@@ -1,10 +1,15 @@
 package com.seethrough.api.common.infrastructure.llm;
 
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+
 import org.springframework.stereotype.Service;
 
 import com.seethrough.api.common.infrastructure.TransactionCallbackManager;
 import com.seethrough.api.common.infrastructure.llm.dto.request.LlmInboundIngredientsRequest;
+import com.seethrough.api.common.infrastructure.llm.dto.request.LlmPersonalNoticeRequest;
 import com.seethrough.api.common.infrastructure.llm.dto.request.LlmUpdateMemberRequest;
+import com.seethrough.api.common.infrastructure.llm.dto.response.LlmPersonalNoticeResponse;
 import com.seethrough.api.common.infrastructure.llm.dto.response.LlmSuccessResponse;
 
 import lombok.RequiredArgsConstructor;
@@ -22,7 +27,7 @@ public class LlmApiService {
 		transactionCallbackManager.executeAfterCommit(() -> {
 			log.info("[LlmApiService] 외부 API 구성원 갱신 요청 시작");
 
-			llmApiClient.sendPutRequestMono("/llm/upcreate_at_user", request, LlmSuccessResponse.class)
+			llmApiClient.sendPutRequestMono("/llm/update-user", request, LlmSuccessResponse.class)
 				.subscribe(
 					success -> log.info("[LlmApiService] 외부 API 구성원 업데이트 성공: response={}", success),
 					error -> log.error("[LlmApiService] 외부 API 구성원 업데이트 실패 (최대 재시도 후): memberId={}, error={}",
@@ -35,11 +40,25 @@ public class LlmApiService {
 		transactionCallbackManager.executeAfterCommit(() -> {
 			log.info("[LlmApiService] 외부 API 식재료 입고 요청 시작");
 
-			llmApiClient.sendPostRequestMono("/llm/upcreate_at_inventory", request, LlmSuccessResponse.class)
+			llmApiClient.sendPostRequestMono("/llm/update-ingredient", request, LlmSuccessResponse.class)
 				.subscribe(
 					success -> log.info("[LlmApiService] 외부 API 식재료 입고 성공: response={}", success),
 					error -> log.error("[LlmApiService] 외부 API 식재료 입고 실패 (최대 재시도 후): error={}", error.getMessage())
 				);
+		});
+	}
+
+	// TODO: Stream 형식으로 변경하기
+	public CompletableFuture<String> sendPersonalNotice(LlmPersonalNoticeRequest request) {
+		return transactionCallbackManager.executeAfterCommit(() -> {
+			log.info("[LlmApiService] 외부 API 식재료 출고 개인 알림 요청 시작");
+
+			return Optional.ofNullable(
+					llmApiClient.sendPostRequestFlux("/llm/personal-notice", request, LlmPersonalNoticeResponse.class)
+						.doOnNext(response -> log.info("[LlmApiService] 외부 API 식재료 출고 개인 알림 응답: {}", response))
+						.blockLast())
+				.map(LlmPersonalNoticeResponse::getNoticeMessage)
+				.orElse(null);
 		});
 	}
 }

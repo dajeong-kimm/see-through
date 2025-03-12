@@ -14,4 +14,8 @@ public interface IngredientRepository {
 	Optional<Ingredient> findByIngredientId(UUID ingredientId);
 
 	void saveAll(List<Ingredient> ingredients);
+
+	List<Ingredient> findIngredientsByIngredientId(List<UUID> ingredientIdList);
+
+	void deleteAll(List<Ingredient> ingredients);
 }

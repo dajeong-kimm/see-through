@@ -3,6 +3,7 @@ package com.seethrough.api.ingredient.application.service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -10,16 +11,20 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.seethrough.api.common.infrastructure.llm.LlmApiService;
 import com.seethrough.api.common.infrastructure.llm.dto.request.LlmInboundIngredientsRequest;
+import com.seethrough.api.common.infrastructure.llm.dto.request.LlmPersonalNoticeRequest;
 import com.seethrough.api.common.pagination.SliceRequestDto;
 import com.seethrough.api.common.pagination.SliceResponseDto;
 import com.seethrough.api.ingredient.application.mapper.IngredientDtoMapper;
 import com.seethrough.api.ingredient.domain.Ingredient;
+import com.seethrough.api.ingredient.domain.IngredientFactory;
 import com.seethrough.api.ingredient.domain.IngredientLog;
+import com.seethrough.api.ingredient.domain.IngredientLogFactory;
 import com.seethrough.api.ingredient.domain.IngredientLogRepository;
 import com.seethrough.api.ingredient.domain.IngredientRepository;
 import com.seethrough.api.ingredient.domain.MovementType;
 import com.seethrough.api.ingredient.exception.IngredientNotFoundException;
 import com.seethrough.api.ingredient.presentation.dto.request.InboundIngredientsRequest;
+import com.seethrough.api.ingredient.presentation.dto.request.OutboundIngredientsRequest;
 import com.seethrough.api.ingredient.presentation.dto.response.IngredientDetailResponse;
 import com.seethrough.api.ingredient.presentation.dto.response.IngredientListResponse;
 import com.seethrough.api.member.application.service.MemberService;
@@ -82,17 +87,48 @@ public class IngredientService {
 
 		LocalDateTime now = LocalDateTime.now();
 
-		List<Ingredient> ingredients = ingredientDtoMapper.toIngredientList(
-			memberIdObj, request.getInboundIngredientRequestList(), now
-		);
+		List<Ingredient> ingredients = request.getInboundIngredientRequestList()
+			.stream()
+			.map(obj -> IngredientFactory.create(memberIdObj, obj.getName(), obj.getImagePath(), now, obj.getExpirationAt()))
+			.toList();
 		ingredientRepository.saveAll(ingredients);
 
-		List<IngredientLog> ingredientLogs = ingredientDtoMapper.toIngredientLogList(
-			memberIdObj, request.getInboundIngredientRequestList(), MovementType.INBOUND, now
-		);
+		List<IngredientLog> ingredientLogs = IngredientLogFactory.createList(memberIdObj, ingredients, MovementType.INBOUND, now);
 		ingredientLogRepository.saveAll(ingredientLogs);
 
 		LlmInboundIngredientsRequest llmRequest = LlmInboundIngredientsRequest.from(ingredients);
 		llmApiService.sendIngredientsInbound(llmRequest);
+	}
+
+	@Transactional
+	public CompletableFuture<String> outboundIngredients(OutboundIngredientsRequest request) {
+		log.debug("[Service] outboundIngredients 호출");
+
+		UUID memberIdObj = UUID.fromString(request.getMemberId());
+		memberService.checkMemberExists(memberIdObj);
+
+		// TODO: UUID 유틸로 뽑아내기
+		List<UUID> ingredientIdList = request.getIngredientIdList()
+			.stream()
+			.map(UUID::fromString)
+			.toList();
+
+		LocalDateTime now = LocalDateTime.now();
+
+		List<Ingredient> ingredients = ingredientRepository.findIngredientsByIngredientId(ingredientIdList);
+		ingredientRepository.deleteAll(ingredients);
+
+		System.out.println(ingredients.size() + "asdfjklas;dfjasld");
+
+		List<IngredientLog> ingredientLogs = IngredientLogFactory.createList(memberIdObj, ingredients, MovementType.OUTBOUND, now);
+		ingredientLogRepository.saveAll(ingredientLogs);
+
+		System.out.println(ingredients.size());
+		if (ingredients.size() == 1) {
+			LlmPersonalNoticeRequest llmRequest = LlmPersonalNoticeRequest.from(memberIdObj, ingredients.get(0).getName(), now);
+			return llmApiService.sendPersonalNotice(llmRequest);
+		}
+
+		return null;
 	}
 }

@@ -59,4 +59,26 @@ public class IngredientRepositoryImpl implements IngredientRepository {
 			entityManager.persist(ingredient);
 		}
 	}
+
+	@Override
+	public List<Ingredient> findIngredientsByIngredientId(List<UUID> ingredientIdList) {
+		log.debug("[Repository] findIngredientsByIngredientId 호출: {} 개의 식재료", ingredientIdList.size());
+
+		List<Ingredient> entities = ingredientJpaRepository.findAllById(ingredientIdList);
+
+		log.debug("[Repository] 조회된 식재료 수: {}", entities.size());
+
+		if (!entities.isEmpty()) {
+			log.debug("[Repository] 첫 번째 식재료 상세 정보:{}", entities.get(0));
+		}
+
+		return entities;
+	}
+
+	@Override
+	public void deleteAll(List<Ingredient> ingredients) {
+		log.debug("[Repository] deleteAll 호출: {} 개의 식재료", ingredients.size());
+
+		ingredientJpaRepository.deleteAll(ingredients);
+	}
 }
