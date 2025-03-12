@@ -1,11 +1,10 @@
 import FaceRecognition from "./components/FaceRecognition";
-import FaceDetection from "./components/Yolo";
+import WebcamPage from "./components/YoloTest";
 
 function App() {
   return (
     <>
-      {/* <FaceRecognition></FaceRecognition> */}
-      <FaceDetection></FaceDetection>
+      <WebcamPage></WebcamPage>
     </>
   );
 }

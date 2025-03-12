@@ -21,6 +21,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+#------------------YOLO----------------------
 yolo_model = YOLO("yolov11n-face.pt")
 
 # YOLO를 활용한 얼굴 감지 API
@@ -56,6 +57,53 @@ async def detect_faces(file: UploadFile = File(...)):
 
     except Exception as e:
         return {"status": "error", "message": str(e)}
+    
+# YOLO로 뽑은 얼굴 이미지로 기존 사용자 찾아보기
+@app.post("/recognize_faces/")
+async def recognize_faces(file: UploadFile = File(...)):
+    """
+    YOLO로 뽑은 얼굴 이미지로 기존 사용자 인식
+    """
+
+    # 업로드된 파일을 임시 저장
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".jpg") as temp_file:
+        temp_file.write(await file.read())
+        temp_file_path = temp_file.name
+
+    try:
+        # 이미지 로드
+        img = cv2.imread(temp_file_path)
+        if img is None:
+            raise ValueError("이미지를 읽을 수 없습니다.")
+        
+        # 기존 사용자 인식
+        result = []
+        
+        # 얼굴 인식 수행
+        dfs = DeepFace.find(
+            img_path=temp_file_path,
+            db_path=db_path,
+            model_name=model,
+            detector_backend="skip",
+            silent=True,
+            threshold=0.3
+        )
+        
+        os.remove(temp_file_path)  # 사용 후 파일 삭제
+        
+        # Pandas DataFrame이 반환되면, JSON 변환 전에 Python 기본 타입으로 변환
+        if isinstance(dfs, list) and len(dfs) > 0:
+            df = dfs[0]  # DeepFace.find()는 리스트 안에 DataFrame을 반환함
+            result = df.applymap(lambda x: int(x) if isinstance(x, (np.int64, np.int32)) else x).to_dict(orient="records")
+        else:
+            result = []
+
+        return {"result": result}
+        
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+
+#------------------DeepFace----------------------
 
 detector_backend = "retinaface"
 model = "Facenet"
@@ -117,7 +165,7 @@ async def register_user_endpoint(file: UploadFile = File(...)):
             image_path=temp_file_path,
             db_path=db_path,
             model_name=model,
-            detector_backend=detector_backend,
+            detector_backend="skip",
             silent=True
         )
         
