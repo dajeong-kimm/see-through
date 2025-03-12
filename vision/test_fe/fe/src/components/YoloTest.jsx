@@ -9,7 +9,7 @@ const FaceDetection = () => {
 
   const detectFace = async () => {
     try {
-      const response = await axios.get("http://localhost:8000/detect_faces/");
+      const response = await axios.get("http://localhost:9000/detect_faces/");
       if (response.data.face) {
         setFaceData(response.data.face);
         setFaceImage(`data:image/jpeg;base64,${response.data.face_image}`);
