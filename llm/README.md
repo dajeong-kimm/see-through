@@ -3,7 +3,7 @@
 ## 🚀 실행 방법
 ### 1. 가상 환경 생성
 ```
-python -m venv venv
+py -3.10 -m venv venv
 ```
 ### 2. 가상 환경 활성화 & 패키지 설치
 - Windows (PowerShell)
@@ -77,15 +77,3 @@ python -m uvicorn app.main:app --reload
   }
 }
 ```
-## 🔥 개발 중인 API
-### 냉장고 재료 관리
-- POST /llm/upcreate_inventory : 사용자의 냉장고에 재료 추가 또는 업데이트
-- DELETE /inventory/remove_ingredient : 특정 재료 삭제
-
-### 사용자 정보 및 음식 기록 관리
-- PUT /llm/upcreate_user : 사용자 정보 업데이트 (나이, 좋아하는 음식, 싫어하는 음식 등)
-- POST /llm/log_food : 음식 섭취 기록 저장
-
-### 식단 및 메뉴 추천
-- POST /llm/recommend_meal_plan : 사용자 그룹에 대한 주간 식단 추천
-- POST /llm/recommend_menu : 특정 사용자에게 메뉴 추천
