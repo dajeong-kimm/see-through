@@ -1,40 +1,37 @@
 # 🍽️ FastAPI 기반 냉장고 & 식단 관리 API
 
 ## 🚀 실행 방법
-### Windows (PowerShell)
+### 1. 가상 환경 생성
+```
+python -m venv venv
+```
+### 2. 가상 환경 활성화 & 패키지 설치
+- Windows (PowerShell)
 ```
 # 가상 환경 활성화
-venv\Scripts\Activate
+.\venv\Scripts\Activate
 
-# FastAPI 서버 실행
-python -m uvicorn app.main:app --reload
-
+# requirements.txt 설치
+pip install -r requirements.txt
 ```
-
-### Windows (CMD)
+- Windows (CMD)
 ```
-# 가상 환경 활성화
+# 가상상 환경 활성화
 venv\Scripts\activate.bat
 
-# FastAPI 서버 실행
-python -m uvicorn app.main:app --reload
+# requirements.txt 설치
+pip install -r requirements.txt
 ```
-
-### Windows (Git Bash)
+- Mac/Linux
 ```
-# 가상 환경 활성화
-source venv/Scripts/activate
-
-# FastAPI 서버 실행
-python -m uvicorn app.main:app --reload
-```
-
-### Mac/Linux (Bash/Zsh)
-```
-# 가상 환경 활성화
+# 가상상 환경 활성화
 source venv/bin/activate
 
-# FastAPI 서버 실행
+# requirements.txt 설치
+pip install -r requirements.txt
+```
+### 3. FastAPI 서버 실행행
+```
 python -m uvicorn app.main:app --reload
 ```
 ---
