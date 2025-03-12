@@ -41,7 +41,7 @@ VALUES
     ('00000000-0000-0000-0000-000000000010', '00000000-0000-0000-0000-000000000005', '버섯', '/images/ingredients/mushroom.jpg', '2025-03-08 09:05:44', DATE_ADD('2025-03-08 09:05:44', INTERVAL 6 DAY));
 
 -- 냉장고 로그 테이블 데이터
-INSERT INTO ingredients_logs (member_id, ingredient_name, movement_type, created_at)
+INSERT INTO ingredient_logs (member_id, ingredient_name, movement_type, created_at)
 VALUES
     -- 입고 기록
     ('00000000-0000-0000-0000-000000000001', '양파', 'INBOUND', '2025-03-01 09:15:27'),

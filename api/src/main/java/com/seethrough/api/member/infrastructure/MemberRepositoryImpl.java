@@ -21,7 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 public class MemberRepositoryImpl implements MemberRepository {
 
 	@PersistenceContext
-	private EntityManager entityManager;
+	private final EntityManager entityManager;
 	private final MemberJpaRepository memberJpaRepository;
 
 	@Override
@@ -55,5 +55,16 @@ public class MemberRepositoryImpl implements MemberRepository {
 		log.debug("[Repository] 조회된 구성원: {}", entity);
 
 		return entity;
+	}
+
+	@Override
+	public boolean existsByMemberId(UUID memberIdObj) {
+		log.debug("[Repository] existsByMemberId 호출");
+
+		boolean result = memberJpaRepository.existsById(memberIdObj);
+
+		log.debug("[Repository] 구성원 존재 여부: {}", result);
+
+		return result;
 	}
 }

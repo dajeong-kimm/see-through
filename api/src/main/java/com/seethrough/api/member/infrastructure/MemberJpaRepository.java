@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.seethrough.api.member.domain.Member;
 
-public interface MemberJpaRepository extends JpaRepository<Member, String> {
+public interface MemberJpaRepository extends JpaRepository<Member, UUID> {
 
 	Slice<Member> findAllByDeletedAtIsNull(Pageable pageable);
 
