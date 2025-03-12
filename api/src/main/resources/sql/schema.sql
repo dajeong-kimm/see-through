@@ -32,7 +32,7 @@ CREATE TABLE ingredients (
 );
 
 -- 냉장고 로그 테이블
-CREATE TABLE ingredients_logs (
+CREATE TABLE ingredient_logs (
     ingredient_log_id INTEGER NOT NULL AUTO_INCREMENT,
     member_id VARCHAR(36) NOT NULL,
     ingredient_name VARCHAR(100) NOT NULL,
@@ -56,7 +56,7 @@ CREATE TABLE meal_plans (
 -- 식사 테이블
 CREATE TABLE meals (
     meal_id VARCHAR(36) NOT NULL,
-    dishes JSON NOT NULL,
+    menu JSON NOT NULL,
     serving_time ENUM('BREAKFAST', 'LUNCH', 'DINNER') NOT NULL,
 
     PRIMARY KEY (meal_id)

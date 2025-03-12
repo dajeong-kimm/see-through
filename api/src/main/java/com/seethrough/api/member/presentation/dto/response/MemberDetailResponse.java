@@ -10,7 +10,7 @@ import lombok.ToString;
 @Getter
 @Builder
 @ToString
-public class DetailMemberResponse {
+public class MemberDetailResponse {
 	private String memberId;
 	private String name;
 	private Integer age;

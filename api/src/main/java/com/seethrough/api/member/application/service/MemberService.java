@@ -20,7 +20,7 @@ import com.seethrough.api.member.presentation.dto.request.DislikedFoodsRequest;
 import com.seethrough.api.member.presentation.dto.request.LoginMemberRequest;
 import com.seethrough.api.member.presentation.dto.request.PreferredFoodsRequest;
 import com.seethrough.api.member.presentation.dto.request.UpdateMemberRequest;
-import com.seethrough.api.member.presentation.dto.response.DetailMemberResponse;
+import com.seethrough.api.member.presentation.dto.response.MemberDetailResponse;
 import com.seethrough.api.member.presentation.dto.response.MemberListResponse;
 
 import lombok.RequiredArgsConstructor;
@@ -77,7 +77,7 @@ public class MemberService {
 
 		return LoginMemberResult.builder()
 			.isNewMember(isNewMember)
-			.response(memberDtoMapper.toResponse(member))
+			.response(memberDtoMapper.toDetailResponse(member))
 			.build();
 	}
 
@@ -98,14 +98,14 @@ public class MemberService {
 		return SliceResponseDto.of(members.map(memberDtoMapper::toListResponse));
 	}
 
-	public DetailMemberResponse getMemberDetail(String memberId) {
+	public MemberDetailResponse getMemberDetail(String memberId) {
 		log.debug("[Service] getMemberDetail 호출");
 
 		UUID memberIdObj = UUID.fromString(memberId);
 
 		Member member = findMember(memberIdObj);
 
-		return memberDtoMapper.toResponse(member);
+		return memberDtoMapper.toDetailResponse(member);
 	}
 
 	@Transactional
@@ -199,6 +199,18 @@ public class MemberService {
 		updateLlmMember(member);
 
 		return true;
+	}
+
+	public void checkMemberExists(UUID memberId) {
+		if (memberId == null) {
+			throw new MemberNotFoundException("구성원 ID가 존재하지 않습니다.");
+		}
+
+		boolean result = memberRepository.existsByMemberId(memberId);
+
+		if (!result) {
+			throw new MemberNotFoundException("구성원을 찾을 수 없습니다.");
+		}
 	}
 
 	private Member findMember(UUID memberId) {
