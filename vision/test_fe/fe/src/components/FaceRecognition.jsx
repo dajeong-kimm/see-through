@@ -127,6 +127,12 @@ export default function FaceRecognition() {
       canvas.height = video.videoHeight;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+      // ✅ 캔버스 전체 테두리 추가
+      ctx.strokeStyle = "blue"; // 테두리 색상 (원하는 색으로 변경 가능)
+      ctx.lineWidth = 2; // 테두리 두께
+      ctx.strokeRect(0, 0, canvas.width, canvas.height);
+
+      // ✅ 얼굴 박스 그리기
       if (faceBox) {
         ctx.strokeStyle = "red";
         ctx.lineWidth = 3;
